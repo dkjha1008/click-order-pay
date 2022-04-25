@@ -1,0 +1,40 @@
+<div class="form-group {!! ($errors->has('name') ? 'has-error' : '') !!}">
+    {!! Form::label('name','Name', ['class' => 'control-label']) !!}
+    {!! Form::text('name', null, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : '') ]) !!}
+    {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
+</div>
+
+<div class="form-group {!! ($errors->has('phone_number') ? 'has-error' : '') !!}">
+    {!! Form::label('phone_number','Phone Number', ['class' => 'control-label']) !!}
+    {!! Form::number('phone_number', null, ['class' => 'form-control' . ($errors->has('phone_number') ? ' is-invalid' : '') ]) !!}
+    {!! $errors->first('phone_number', '<span class="help-block">:message</span>') !!}
+</div>
+
+<div class="form-group {!! ($errors->has('address') ? 'has-error' : '') !!}">
+    {!! Form::label('address','Address', ['class' => 'control-label']) !!}
+    {!! Form::text('address', null, ['class' => 'form-control' . ($errors->has('address') ? ' is-invalid' : '') ]) !!}
+    {!! $errors->first('address', '<span class="help-block">:message</span>') !!}
+</div>
+
+<div class="form-group {!! ($errors->has('notes') ? 'has-error' : '') !!}">
+    {!! Form::label('notes','(Optional) Special Instructions/Directions', ['class' => 'control-label']) !!}
+    {!! Form::text('notes', null, ['class' => 'form-control' . ($errors->has('notes') ? ' is-invalid' : '') ]) !!}
+    {!! $errors->first('notes', '<span class="help-block">:message</span>') !!}
+</div>
+
+<div class="form-group {!! ($errors->has('verified') ? 'has-error' : '') !!}">
+    {!! Form::label('verified','ID verified', ['class' => 'control-label']) !!}</br>
+    {!! Form::radio('verified', 0) !!} No
+    {!! Form::radio('verified', 1) !!} Yes
+	</br>
+    {!! $errors->first('verified', '<span class="help-block">:message</span>') !!}
+</div>
+
+<div class="form-group {!! ($errors->has('status') ? 'has-error' : '') !!}">
+    {!! Form::label('status','Status', ['class' => 'control-label']) !!}</br>
+    {!! Form::radio('status', 0) !!} De-active
+    {!! Form::radio('status', 1) !!} Active
+    {!! Form::radio('status', 2) !!} Block
+	</br>
+    {!! $errors->first('status', '<span class="help-block">:message</span>') !!}
+</div>

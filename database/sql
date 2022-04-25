@@ -1,0 +1,356 @@
+-- Adminer 4.8.1 MySQL 5.7.36-0ubuntu0.18.04.1 dump
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `addresses`;
+CREATE TABLE `addresses` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` bigint(20) unsigned NOT NULL,
+  `card_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `card_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `expire_month` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `expire_year` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `addresses_users_id_foreign` (`users_id`),
+  CONSTRAINT `addresses_users_id_foreign` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `addresses` (`id`, `users_id`, `card_name`, `card_number`, `expire_month`, `expire_year`, `created_at`, `updated_at`) VALUES
+(1,	1,	'jaspreet',	'4242424242424242',	'07',	'2023',	'2021-12-19 20:45:29',	'2021-12-22 22:12:20');
+
+DROP TABLE IF EXISTS `carts`;
+CREATE TABLE `carts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int(11) DEFAULT NULL,
+  `guest_uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tip` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `promocode` text COLLATE utf8mb4_unicode_ci,
+  `tax` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `delivery_charges` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `total_price` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('cart','paid') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cart',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `carts_users_id_index` (`users_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `carts` (`id`, `users_id`, `guest_uuid`, `tip`, `promocode`, `tax`, `delivery_charges`, `price`, `total_price`, `status`, `created_at`, `updated_at`) VALUES
+(19,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'1',	'',	'0.00',	'0.00',	'994.00',	'995.00',	'paid',	'2021-12-20 01:04:33',	'2021-12-20 01:04:53'),
+(20,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'1',	'',	'0.00',	'0.00',	'330.00',	'331.00',	'paid',	'2021-12-20 01:05:42',	'2021-12-20 01:06:23'),
+(21,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'1',	'',	'0.00',	'0.00',	'994.00',	'995.00',	'paid',	'2021-12-20 01:08:37',	'2021-12-20 01:08:50'),
+(22,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'1',	'',	'0.00',	'0.00',	'994.00',	'995.00',	'paid',	'2021-12-20 01:09:14',	'2021-12-20 01:09:26'),
+(23,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'9',	'',	'0.00',	'0.00',	'330.00',	'339.00',	'paid',	'2021-12-20 01:09:33',	'2021-12-20 01:39:03'),
+(24,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'0',	'',	'0.00',	'0.00',	'330.00',	'330.00',	'paid',	'2021-12-20 01:39:11',	'2021-12-20 01:39:25'),
+(25,	1,	'f4aa3bc2979e67394a6e4cca6fa57109',	'2',	'',	'0.00',	'0.00',	'994.00',	'996.00',	'paid',	'2021-12-20 01:39:49',	'2021-12-20 01:40:26'),
+(26,	NULL,	'7b8c8a013f4fda55f6ba87fb391e5cbc',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'cart',	'2021-12-21 22:28:17',	'2021-12-21 22:28:17'),
+(27,	1,	'978096cc4567d683f98ffdb70f09c9dc',	'1',	'',	'0.00',	'0.00',	'1324.00',	'1325.00',	'paid',	'2021-12-22 20:30:06',	'2021-12-22 22:12:24'),
+(37,	NULL,	'700aca366163f3c884671524bee7b65d',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'cart',	'2021-12-29 00:47:21',	'2021-12-29 18:23:41');
+
+DROP TABLE IF EXISTS `cart_products`;
+CREATE TABLE `cart_products` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `carts_id` bigint(20) unsigned NOT NULL,
+  `store_id` bigint(20) unsigned NOT NULL,
+  `products_id` bigint(20) unsigned NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cart_products_carts_id_foreign` (`carts_id`),
+  KEY `cart_products_products_id_foreign` (`products_id`),
+  CONSTRAINT `cart_products_carts_id_foreign` FOREIGN KEY (`carts_id`) REFERENCES `carts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cart_products_products_id_foreign` FOREIGN KEY (`products_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `cart_products` (`id`, `carts_id`, `store_id`, `products_id`, `quantity`, `created_at`, `updated_at`) VALUES
+(19,	19,	0,	2,	1,	'2021-12-20 01:04:33',	'2021-12-20 01:04:33'),
+(20,	20,	0,	3,	1,	'2021-12-20 01:05:42',	'2021-12-20 01:05:42'),
+(21,	21,	0,	2,	1,	'2021-12-20 01:08:37',	'2021-12-20 01:08:37'),
+(22,	22,	0,	2,	1,	'2021-12-20 01:09:14',	'2021-12-20 01:09:14'),
+(23,	23,	0,	3,	1,	'2021-12-20 01:09:33',	'2021-12-20 01:09:33'),
+(24,	24,	0,	3,	1,	'2021-12-20 01:39:11',	'2021-12-20 01:39:11'),
+(25,	25,	0,	2,	1,	'2021-12-20 01:39:49',	'2021-12-20 01:40:07'),
+(26,	26,	0,	3,	1,	'2021-12-21 22:28:17',	'2021-12-21 22:28:17'),
+(28,	27,	0,	3,	1,	'2021-12-22 20:31:49',	'2021-12-22 20:31:49'),
+(29,	27,	0,	2,	1,	'2021-12-22 21:08:46',	'2021-12-22 21:08:46'),
+(30,	37,	5,	6,	1,	'2021-12-29 18:23:37',	'2021-12-29 18:23:37'),
+(31,	37,	5,	5,	1,	'2021-12-29 18:23:39',	'2021-12-29 18:23:39'),
+(32,	37,	5,	8,	1,	'2021-12-29 18:23:41',	'2021-12-29 18:23:41');
+
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reorder` int(11) DEFAULT NULL,
+  `status` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `is_delete` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `categories_name_unique` (`name`),
+  UNIQUE KEY `categories_slug_unique` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `categories` (`id`, `name`, `slug`, `image`, `reorder`, `status`, `is_delete`, `created_at`, `updated_at`) VALUES
+(1,	'Sopoline Moody',	'sopoline-moody',	'category-1-fd11e5943de0df3056e59528116b09c4.jpg',	1,	'1',	'0',	'2021-12-19 20:39:49',	'2021-12-19 20:39:50'),
+(2,	'Hyatt Avila',	'hyatt-avila',	'category-1-bec4e063ad202d590ce6eb4a689e4452.jpg',	2,	'1',	'0',	'2021-12-20 23:49:21',	'2021-12-20 23:49:45');
+
+DROP TABLE IF EXISTS `favourites`;
+CREATE TABLE `favourites` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int(11) DEFAULT NULL,
+  `guest_uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `products_id` bigint(20) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `favourites_products_id_foreign` (`products_id`),
+  KEY `favourites_users_id_index` (`users_id`),
+  CONSTRAINT `favourites_products_id_foreign` FOREIGN KEY (`products_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `favourites` (`id`, `users_id`, `guest_uuid`, `products_id`, `created_at`, `updated_at`) VALUES
+(1,	NULL,	'7b8c8a013f4fda55f6ba87fb391e5cbc',	5,	'2021-12-21 22:27:37',	'2021-12-21 22:27:37'),
+(2,	NULL,	'978096cc4567d683f98ffdb70f09c9dc',	1,	'2021-12-22 19:54:42',	'2021-12-22 19:54:42');
+
+DROP TABLE IF EXISTS `migrations`;
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1,	'2014_10_12_000000_create_users_table',	1),
+(2,	'2014_10_12_100000_create_password_resets_table',	1),
+(3,	'2014_10_12_200000_add_two_factor_columns_to_users_table',	1),
+(4,	'2020_12_08_094940_create_categories_table',	1),
+(5,	'2020_12_08_095752_create_products_table',	1),
+(6,	'2020_12_09_050500_create_promocodes_table',	1),
+(7,	'2020_12_09_060704_create_order_statuses_table',	1),
+(8,	'2020_12_11_031412_create_carts_table',	1),
+(9,	'2020_12_13_165740_create_cart_products_table',	1),
+(10,	'2020_12_14_193307_create_addresses_table',	1),
+(11,	'2020_12_15_080519_create_payments_table',	1),
+(12,	'2020_12_19_185506_create_payment_statuses_table',	1),
+(13,	'2020_12_29_032901_create_settings_table',	1),
+(14,	'2021_01_02_095622_create_favourites_table',	1),
+(15,	'2021_12_27_235451_add_store_id_to_products',	2);
+
+DROP TABLE IF EXISTS `order_statuses`;
+CREATE TABLE `order_statuses` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `order_statuses` (`id`, `name`, `status`, `created_at`, `updated_at`) VALUES
+(1,	'Order Pending',	'1',	NULL,	NULL),
+(2,	'Order Completed',	'1',	NULL,	NULL),
+(3,	'Order Canceled',	'1',	NULL,	NULL),
+(4,	'Order Returned',	'1',	NULL,	NULL),
+(5,	'Order Ready for Delivery',	'1',	NULL,	NULL),
+(6,	'Order Payment Refunded',	'1',	NULL,	NULL),
+(7,	'Order in Progress',	'1',	NULL,	NULL);
+
+DROP TABLE IF EXISTS `password_resets`;
+CREATE TABLE `password_resets` (
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `payments`;
+CREATE TABLE `payments` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` int(11) NOT NULL,
+  `carts_id` int(11) NOT NULL,
+  `transaction_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `auth_code` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `amount` decimal(8,2) NOT NULL,
+  `currency` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_type` enum('authorize','venmo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'authorize',
+  `is_progress` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `is_admin_cancle` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `order_status` int(11) NOT NULL DEFAULT '1',
+  `is_refund` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `payments` (`id`, `users_id`, `carts_id`, `transaction_id`, `auth_code`, `amount`, `currency`, `payment_status`, `payment_type`, `is_progress`, `is_admin_cancle`, `order_status`, `is_refund`, `created_at`, `updated_at`) VALUES
+(20,	1,	20,	'ch_3K8l35IKJM6jnGd50ooujA4i',	NULL,	331.00,	'USD',	'captured',	'authorize',	'0',	'0',	1,	'0',	'2021-12-20 01:06:23',	'2021-12-20 01:06:23'),
+(21,	1,	21,	'ch_3K8l5SIKJM6jnGd50ZngEooZ',	NULL,	995.00,	'USD',	'captured',	'authorize',	'0',	'0',	1,	'0',	'2021-12-20 01:08:50',	'2021-12-20 01:08:50'),
+(22,	1,	22,	'ch_3K8l62IKJM6jnGd50gxnx1lQ',	NULL,	995.00,	'USD',	'captured',	'authorize',	'0',	'0',	1,	'0',	'2021-12-20 01:09:26',	'2021-12-20 01:09:26'),
+(23,	1,	23,	'ch_3K8lYhIKJM6jnGd51yjdBjrK',	NULL,	339.00,	'USD',	'captured',	'authorize',	'0',	'0',	1,	'0',	'2021-12-20 01:39:03',	'2021-12-20 01:39:03'),
+(24,	1,	24,	'ch_3K8lZ3IKJM6jnGd51Z0x0RPf',	NULL,	330.00,	'USD',	'captured',	'authorize',	'0',	'0',	3,	'0',	'2021-12-20 01:39:25',	'2021-12-20 01:41:43'),
+(25,	1,	25,	'ch_3K8la2IKJM6jnGd50rXhFnMp',	NULL,	996.00,	'USD',	'captured',	'authorize',	'0',	'0',	3,	'0',	'2021-12-20 01:40:26',	'2021-12-20 01:40:38'),
+(26,	1,	37,	'ch_3K9nlKIKJM6jnGd50aagF8UW',	NULL,	1325.00,	'USD',	'captured',	'authorize',	'0',	'0',	5,	'0',	'2021-12-22 22:12:24',	'2021-12-29 18:47:00');
+
+DROP TABLE IF EXISTS `payment_statuses`;
+CREATE TABLE `payment_statuses` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `users_id` bigint(20) unsigned NOT NULL,
+  `payments_id` bigint(20) unsigned NOT NULL,
+  `order_status_id` bigint(20) unsigned NOT NULL,
+  `comment` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `payment_statuses_users_id_foreign` (`users_id`),
+  KEY `payment_statuses_payments_id_foreign` (`payments_id`),
+  KEY `payment_statuses_order_status_id_foreign` (`order_status_id`),
+  CONSTRAINT `payment_statuses_order_status_id_foreign` FOREIGN KEY (`order_status_id`) REFERENCES `order_statuses` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `payment_statuses_payments_id_foreign` FOREIGN KEY (`payments_id`) REFERENCES `payments` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `payment_statuses_users_id_foreign` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `payment_statuses` (`id`, `users_id`, `payments_id`, `order_status_id`, `comment`, `created_at`, `updated_at`) VALUES
+(21,	1,	20,	1,	'Order Created',	'2021-12-20 01:06:23',	'2021-12-20 01:06:23'),
+(22,	1,	21,	1,	'Order Created',	'2021-12-20 01:08:50',	'2021-12-20 01:08:50'),
+(23,	1,	22,	1,	'Order Created',	'2021-12-20 01:09:26',	'2021-12-20 01:09:26'),
+(24,	1,	23,	1,	'Order Created',	'2021-12-20 01:39:03',	'2021-12-20 01:39:03'),
+(25,	1,	24,	1,	'Order Created',	'2021-12-20 01:39:25',	'2021-12-20 01:39:25'),
+(26,	1,	25,	1,	'Order Created',	'2021-12-20 01:40:26',	'2021-12-20 01:40:26'),
+(27,	1,	25,	3,	'Order Canceled',	'2021-12-20 01:40:38',	'2021-12-20 01:40:38'),
+(28,	1,	24,	3,	'Order Canceled',	'2021-12-20 01:41:43',	'2021-12-20 01:41:43'),
+(29,	1,	26,	1,	'Order Created',	'2021-12-22 22:12:24',	'2021-12-22 22:12:24'),
+(30,	5,	26,	5,	'gfghfgh',	'2021-12-29 18:47:00',	'2021-12-29 18:47:00');
+
+DROP TABLE IF EXISTS `products`;
+CREATE TABLE `products` (
+  `store_id` int(11) unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `category` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `qty` int(11) NOT NULL,
+  `price` decimal(8,2) NOT NULL,
+  `tag` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reorder` int(11) DEFAULT NULL,
+  `status` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `is_delete` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `nutrition_info` longtext COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `products` (`store_id`, `id`, `category`, `title`, `slug`, `image`, `description`, `sku`, `qty`, `price`, `tag`, `reorder`, `status`, `is_delete`, `created_at`, `updated_at`, `nutrition_info`) VALUES
+(5,	1,	'1',	'Explicabo Ex deseru',	'explicabo-ex-deseru',	'product-1-91cfef70a9ec69c44e8851ce9151575e.webp',	'Incidunt qui numqua',	'sku123',	10,	345.00,	'Deserunt commodo qui',	1,	'0',	'0',	'2021-12-19 20:40:05',	'2021-12-29 19:35:22',	NULL),
+(6,	2,	'1',	'Temporibus at nihil',	'temporibus-at-nihil',	'product-1-1be9004c30c7c008df2902981ad8d1f5.webp',	'Consequatur accusant',	'Ab cillum quia adipi',	572,	994.00,	'Do non expedita fugi',	2,	'1',	'0',	'2021-12-19 20:40:45',	'2021-12-22 22:12:24',	NULL),
+(6,	3,	'1',	'Molestias voluptate',	'molestias-voluptate',	'product-1-944576e3c9064674139551adfc356bd9.webp',	'Fugiat dolore quia s',	'Libero laudantium e',	762,	330.00,	'Quidem vel Nam dolor',	3,	'1',	'0',	'2021-12-19 20:41:03',	'2021-12-22 22:12:24',	NULL),
+(8,	4,	'1',	'Pariatur Sunt moles',	'pariatur-sunt-moles',	'product-1-16f77d921dcaff1ce8c795a3ced96ece.webp',	'Dolore tempora dolor',	'Consectetur pariatur',	724,	794.00,	'Excepteur est ut aut',	4,	'0',	'0',	'2021-12-20 23:12:57',	'2021-12-20 23:12:57',	NULL),
+(5,	5,	'2',	'Proident voluptas q',	'proident-voluptas-q',	'product-1-34ad6d8de9a092e9835e58489d3146e1.webp',	'Maxime beatae volupt',	'Proident ut cum qui',	321,	750.00,	'Quae commodo vitae p',	5,	'1',	'0',	'2021-12-20 23:50:02',	'2021-12-20 23:50:02',	NULL),
+(5,	6,	'1',	'Voluptates qui et do',	'voluptates-qui-et-do',	'product-1-d17a45b454d4b5bb9c1d388779bca0c8.webp',	'Recusandae Non quis',	'Voluptate autem quis',	585,	501.00,	'Sequi eveniet duis',	6,	'1',	'0',	'2021-12-22 20:09:33',	'2021-12-22 20:09:34',	NULL),
+(8,	7,	'1',	'Quam illum cum minu',	'quam-illum-cum-minu',	'product-1-70ea6faf705af4f12a031733b01a968f.webp',	'Veritatis deserunt a',	'Optio quidem dolor',	876,	735.00,	'Enim consequatur Qu',	7,	'1',	'0',	'2021-12-22 20:13:42',	'2021-12-22 20:13:42',	'<table summary=\"This table summarizes nutritional information\">\r\n	<tbody>\r\n		<tr>\r\n			<td>Vitamin A&nbsp;0&mu;g</td>\r\n			<td>0%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Vitamin B6&nbsp;0.1mg</td>\r\n			<td>10%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Vitamin C&nbsp;6mg</td>\r\n			<td>10%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Vitamin E&nbsp;1.8mg</td>\r\n			<td>10%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Calcium&nbsp;0mg</td>\r\n			<td>0%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Magnesium&nbsp;14mg</td>\r\n			<td>5%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Zinc&nbsp;0.3mg</td>\r\n			<td>2%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Thiamine&nbsp;0.1mg</td>\r\n			<td>4%</td>\r\n		</tr>\r\n		<tr>\r\n			<td>Niacin&nbsp;1.2mg</td>\r\n		</tr>\r\n	</tbody>\r\n</table>'),
+(5,	8,	'2',	'test product',	'test-product',	'product-1-76c76b85531c2d90c05d63c5a9f40e27.webp',	'test',	'34543',	12,	200.00,	'tetssdfsd',	8,	'1',	'0',	'2021-12-27 19:28:00',	'2021-12-27 22:22:27',	'<p>test</p>');
+
+DROP TABLE IF EXISTS `promocodes`;
+CREATE TABLE `promocodes` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `promocode` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `start_date` date NOT NULL,
+  `expire_date` date NOT NULL,
+  `coupon_type` enum('percentage','fixed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'percentage',
+  `discount` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uses_limit` int(11) NOT NULL,
+  `new_users` enum('no','yes') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no',
+  `status` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `is_delete` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `settings`;
+CREATE TABLE `settings` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `store_online` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `store_modal` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `store_offline_message` text COLLATE utf8mb4_unicode_ci,
+  `start_time` time DEFAULT NULL,
+  `close_time` time DEFAULT NULL,
+  `start_time_second` time DEFAULT NULL,
+  `close_time_second` time DEFAULT NULL,
+  `linkedin` text COLLATE utf8mb4_unicode_ci,
+  `instagram` text COLLATE utf8mb4_unicode_ci,
+  `tiktok` text COLLATE utf8mb4_unicode_ci,
+  `store_tax` decimal(8,2) NOT NULL,
+  `delivery_charges` decimal(8,2) NOT NULL,
+  `delivery_time` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Students Served',
+  `students_served` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1296 students',
+  `promocode_show` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `promocode_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `promocode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `promocode_message` text COLLATE utf8mb4_unicode_ci,
+  `low_quantity` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `order_limit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '10',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `settings` (`id`, `store_online`, `store_modal`, `store_offline_message`, `start_time`, `close_time`, `start_time_second`, `close_time_second`, `linkedin`, `instagram`, `tiktok`, `store_tax`, `delivery_charges`, `delivery_time`, `students_served`, `promocode_show`, `promocode_text`, `promocode`, `promocode_message`, `low_quantity`, `order_limit`, `created_at`, `updated_at`) VALUES
+(1,	'1',	'1',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	0.00,	0.00,	'Students Served',	'1296 students',	'0',	NULL,	NULL,	NULL,	'1',	'10',	NULL,	NULL);
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `role` enum('admin','user','store') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `otp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `two_factor_secret` text COLLATE utf8mb4_unicode_ci,
+  `two_factor_recovery_codes` text COLLATE utf8mb4_unicode_ci,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `zip_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `verified` enum('0','1') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `status` enum('0','1','2') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `users` (`id`, `role`, `name`, `email`, `phone_number`, `otp`, `verified_at`, `password`, `two_factor_secret`, `two_factor_recovery_codes`, `image`, `city`, `state`, `zip_code`, `address`, `notes`, `verified`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1,	'admin',	'jaspreet kaur',	'admin@yopmail.com',	'9781441279',	'',	'2021-12-19 18:26:46',	'$2y$10$IHCDIJWr6IppC.ymZk3w7OhUyVTACcYGpApDgfsIYr6szvFjcOypm',	NULL,	NULL,	NULL,	NULL,	NULL,	'140401',	'admin@yopmail.co',	'Provident aliquam o',	'1',	'1',	NULL,	NULL,	'2021-12-22 22:12:20'),
+(2,	'user',	NULL,	'nyaza@mailinator.com',	'8923660496',	'196115',	NULL,	'$2y$10$Z828lC5XvlRiikTQslHBjOp8tVUHfM5Luqj35.oLAZNQiGGrjAqPS',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'1',	'1',	NULL,	'2021-12-22 23:45:44',	'2021-12-22 23:46:13'),
+(3,	'user',	NULL,	'pocofuqyf@mailinator.com',	'8847568925',	'',	'2021-12-22 23:47:57',	'$2y$10$2lX.clMkB6a.gKp2eK6TkuDdQnSreU65priwOkr0SYVB.84iZaSxi',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'1',	'1',	NULL,	'2021-12-22 23:47:42',	'2021-12-22 23:47:57'),
+(4,	'user',	'john Doe',	NULL,	'8989898988',	NULL,	NULL,	'12345678',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'1',	'1',	NULL,	'2021-12-27 01:39:31',	'2021-12-27 01:39:31'),
+(5,	'store',	'priya',	NULL,	'8988776655',	'',	'2021-12-29 18:26:39',	'$2y$10$IHCDIJWr6IppC.ymZk3w7OhUyVTACcYGpApDgfsIYr6szvFjcOypm',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'1',	'1',	NULL,	'2021-12-27 01:40:36',	'2021-12-29 18:26:39'),
+(6,	'store',	'r3m',	NULL,	'8988776655',	NULL,	NULL,	'$2y$10$sWOdToSmdAwlRmWBd1jZmOwyvRwFDvLFOvv4O7pKPS7Ou2CrOCadC',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'1',	'1',	NULL,	'2021-12-27 01:50:26',	'2021-12-27 01:50:26'),
+(7,	'store',	'jdsfsd',	NULL,	'9888776655',	'',	'2021-12-27 01:52:57',	'$2y$10$5m2DaW0W7eq/7oDwvNQk5O2RQSbv9EfUCxugNVsA/1clA1HyerLOm',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'1',	'1',	NULL,	'2021-12-27 01:52:14',	'2021-12-27 01:52:57'),
+(8,	'store',	'aman duve',	'mycefapyqo@mailinator.com',	'02356895623',	'',	'2021-12-27 20:00:15',	'$2y$10$qQMp7.YLvceyV5yraN9/Lu1KpZYdo6ZkDxxLg/.eTwSalEoJurY9S',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'local address',	NULL,	'1',	'1',	NULL,	'2021-12-27 17:39:17',	'2021-12-27 23:36:25');
+
+-- 2021-12-30 07:10:02
