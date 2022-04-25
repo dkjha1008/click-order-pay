@@ -236,13 +236,18 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		if(type=='auto')
 		{
 			setCustomTip(false);
-
 		}
+		
+		//tip = tip.replace(/^0+/, '');
+		
 		if(tip == ''){
 			tip = 0;
 		}
 		else {
 			tip = tip.replace(/^0+/, '');
+			if(tip==''){
+				tip = 0;
+			}
 		}
 		//console.log('type',type);
 		//console.log('tip',tip)
