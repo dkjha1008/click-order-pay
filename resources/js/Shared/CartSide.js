@@ -28,7 +28,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 	const [years, setYears] = useState([]);
 	const [savedCard, setSavedCard] = useState({});
 	
-	const [tip, setTip] = useState(0);
+	const [tip, setTip] = useState(1);
 	const [customTip, setCustomTip] = useState(false);
 	const [payAmount, setPayAmount] = useState(0);
 	const [cartCount, setCartCount] = useState(0);
@@ -54,7 +54,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		cvv: '',
 		expire_month: '',
 		expire_year: '',
-		tip: '0',
+		tip: '1',
 		promo_code: '',
 		uuid: '',
 		pay_amount: '',
@@ -68,15 +68,14 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 	});
 	
 	useEffect(() => {
-		// addTip(0);
-		//console.log("Testing");
+		console.log("Testing");
 		fetchCartData();
 		if(cartOpened){
 			fetchCartData();
 		}
 		//..delivery_charges
 		setDeliveryCharges(app.settings.delivery_charges);
-		//console.log(cartData)
+		console.log(cartData)
 		//debugger;
 	}, [cartOpened]);
 	
@@ -94,11 +93,11 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 			await axios.get(route('cart.data', data)).then(res => {
 				
 				setCartData(res.data.data.cart_product);
-				//console.log("datajhjjhjhjhjhjhjhjhjhjhj",res.data.data.cart_product);
+				console.log("datajhjjhjhjhjhjhjhjhjhjhj",res.data.data.cart_product);
 				setRelatedProducts(res.data.data.cart_product)
 				setCartCount(res.data.count);
 				setRelatedProducts(res.data.relatedProducts);
-				//console.log(relatedProducts);
+				console.log(relatedProducts);
 				
 				setMonths(res.data.months);
 				setYears(res.data.years);
@@ -109,7 +108,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 				taxAmount(newTax.toFixed(2));
 				
 				//..set total price
-				setPayAmount(parseFloat(res.data.price)  + parseFloat(newTax) + parseFloat(deliveryCharges));
+				setPayAmount(parseFloat(res.data.price) + parseFloat(tip) + parseFloat(newTax) + parseFloat(deliveryCharges));
 				
 				if(current=='ucla'){
 					setCartPopup(res.data.count, res.data.price);
@@ -148,52 +147,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 			taxAmount(newTax.toFixed(2));
 			
 			//..set total price
-			setPayAmount(parseFloat(res.data.price)  + parseFloat(newTax) + parseFloat(deliveryCharges) - discountAmount);
-			
-			//setTip(0);
-			if(res.data.count==0){
-				const url = route('ucla');
-				window.location.href = url;
-			}
-		});
-	}
-	function handleAttr(product, cart,attr) {
-		let uuid = localStorage.getItem("uuid");
-		let data = {product, cart, attr, uuid}
-		// console.log('attrrrrrrrrrrrrr',attr);
-		// console.log('jfhgjf');
-		axios.post(route('cart.attr'), data).then(res => {
-			setCartData(res.data.data.cart_product);
-			setCartCount(res.data.count);
-			
-			var elements=document.getElementsByClassName('btn btn-success active');
-			// console.log('ssssssssssss',elements);
-	
-			
-			for (var i = 0; i < elements.length; i++) {
-				elements[i].classList.remove('active');
-			}
-			// if(element.length>0)
-			// {
-			// 	console.log('dfddd');
-			// element.classList.remove('active');
-			// console.log('ssssssssssss',element);
-			// }
-		
-			 var element = document.getElementById(attr);
-			
-			 element.classList.add('active');
-
-			if(current=='ucla'){
-				setCartPopup(res.data.count, res.data.price);
-			}
-			
-			//...tax
-			let newTax = res.data.price * app.settings.store_tax / 100;
-			taxAmount(newTax.toFixed(2));
-			
-			//..set total price
-			setPayAmount(parseFloat(res.data.price) + parseFloat(newTax) + parseFloat(deliveryCharges) - discountAmount);
+			setPayAmount(parseFloat(res.data.price) + parseFloat(tip) + parseFloat(newTax) + parseFloat(deliveryCharges) - discountAmount);
 			
 			//setTip(0);
 			if(res.data.count==0){
@@ -203,12 +157,12 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		});
 	}
 
-	function addToCart(products_id,store_id) {
+	function addToCart(product,store_id) {
 
 		// setProductPopup({});
 		let uuid = localStorage.getItem("uuid");
 		
-		let data = { uuid, products_id,store_id };
+		let data = { uuid, product,store_id };
 		axios.post(route('cart.store'), data).then(res => {
 			setCartCount(res.data.count);
 			toast(res.data.message);
@@ -218,52 +172,20 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		});
 	}
 	
-	// function addTip(tip){
-	// 	setTip(tip);
-		
-	// 	setValues(values => ({
-	// 		...values,
-	// 		tip: tip
-	// 	}));
-	// 	setCustomTip(false);
-		
-	// 	//..set total price
-	// 	setPayAmount(parseFloat(totalPrice) + parseFloat(tip) + parseFloat(tax) + parseFloat(deliveryCharges) - discountAmount);
-	// }
-
-	function addTip(tip,type){
-	   //console.log('type',type);
-		if(type=='auto')
-		{
-			setCustomTip(false);
-		}
-		
-		//tip = tip.replace(/^0+/, '');
-		
-		if(tip == ''){
-			tip = 0;
-		}
-		else {
-			tip = tip.replace(/^0+/, '');
-			if(tip==''){
-				tip = 0;
-			}
-		}
-		//console.log('type',type);
-		//console.log('tip',tip)
+	
+	function addTip(tip){
 		setTip(tip);
-
+		
 		setValues(values => ({
 			...values,
 			tip: tip
 		}));
-			
-		var total=parseFloat(totalPrice) + parseFloat(tip);
-		document.getElementById("subtotal").innerHTML='$'+total;
-		document.getElementById("total").innerHTML='$'+total;
-
-		//console.log(total);
+		setCustomTip(false);
+		
+		//..set total price
+		setPayAmount(parseFloat(totalPrice) + parseFloat(tip) + parseFloat(tax) + parseFloat(deliveryCharges) - discountAmount);
 	}
+
 	
 	function handleChange(e) {
 		//debugger;
@@ -273,11 +195,14 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		
 		if(key=='tip'){
 			let newvalue = parseFloat(value);
-			if(!newvalue){
+			if(newvalue){
+				newvalue = newvalue.replace(/^0+/, '');
+				newvalue = 0;
+			}
+			else {
 				newvalue = 0;
 			}
 			setTip(newvalue);
-			//console.log('tip',tip)
 			//..set total price
 			setPayAmount(parseFloat(totalPrice) + parseFloat(newvalue) + parseFloat(tax) + parseFloat(deliveryCharges) - discountAmount);
 		}
@@ -285,7 +210,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 			...values,
 			[key]: value
 		}));
-		//console.log(values)
+		console.log(values)
 	}
 	
 	function useCard(card){
@@ -310,8 +235,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		values['tax'] = tax;
 		values['delivery_charges'] = deliveryCharges;
 		values['uuid'] = uuid;
-		values['pickup_date'] = currentDate;
-		values['tip'] = tip;
+		
 		if(!paymentPage){
 			axios.post(route('checkout.user'), values).then((res) => {
 				if(res.data.type=='success'){					
@@ -377,7 +301,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 				}));
 				setDiscount({});
 				setDiscountAmount(0);
-				setPayAmount(parseFloat(totalPrice) + + parseFloat(tax) + parseFloat(deliveryCharges));
+				setPayAmount(parseFloat(totalPrice) + parseFloat(tip) + parseFloat(tax) + parseFloat(deliveryCharges));
 			}
 		});	
 	}
@@ -389,7 +313,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		}));
 		setDiscount({});
 		setDiscountAmount(0);
-		setPayAmount(parseFloat(totalPrice)  + parseFloat(tax) + parseFloat(deliveryCharges));
+		setPayAmount(parseFloat(totalPrice) + parseFloat(tip) + parseFloat(tax) + parseFloat(deliveryCharges));
 	}
 	
 	function checkAuth(){
@@ -450,13 +374,12 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 				 <div className="cart-items">
 					<ul className="list-unstyled">
 						{cartData.length>0 && cartData.map((cart, k) => {
-							//console.log('cart', cart)
+							console.log('cart', cart)
 							let image = '';
 							if(cart.product.image){
 							image = 'storage/products/' + cart.product.image;
 							}
-							let tprice = cart.quantity * (parseInt(cart.product_price) + parseInt(cart.attribute_price));
-							//console.log('cartttt',cart);
+							let tprice = cart.quantity * cart.product.price;
 							totalPrice = totalPrice + tprice;
 							return(
 							<li key={k}>
@@ -468,10 +391,10 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 								<div className="cart-cntnt">
 									<h5 className="cart-heading">{cart.product.title}</h5>
 									<p className="product-quantity">{cart.product.description}</p>
-									{/* {cart.type=='Variable' &&
+									{cart.type=='Variable' &&
 									<p className="product-quantity">Size: {cart.product.sizes}</p>
 									
-									} */}
+									}
 									<div className="quantity-flex">
 										<div className="quantity-div">
 											<div className="number-input md-number-input">
@@ -490,29 +413,27 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 												{(cart.quantity<cart.product.qty) &&
 												<button className="plus" onClick={() => handleAction('plus', cart.id, cart.carts_id)}>+</button>
 												}
-											</div> 
+											</div>
 										</div>
 										<div className="price-box">
-											<p className="price">x ${parseInt(cart.product_price) + parseInt(cart.attribute_price)}</p>
+											<p className="price">x ${cart.product.price}</p>
 											{tprice>0 && <p className="price">${tprice}</p>}
 										</div>
 										
 
 									</div>
-									<div className="price-box">
-											{/* <p className="price">Size:  */}
+									{/* <div className="price-box">
+											<p className="price">Size: 
 											{ cart.attributes.length>0 && cart.attributes.map((cartattr, k) => {
 						                 	
-											//  console.log('cart.product.id', cart.product.id);
-											//  console.log('cart.id', cart.id);
-											//  console.log('uyuyuyuyuy', cartattr);
-											 return <p className="price">Size: <button className="btn btn-success"  id={cartattr.id} onClick={() => handleAttr(cart.product.id,cart.id,cartattr.id)}>{cartattr.value}</button>
-</p>
+											 console.log('uyuyuyuyuy', cartattr);
+											 return <button className="btn btn-success" onClick={() => cartAttr(product.id,product.store_id)}>{cartattr.value}</button>
+
 											})
 											
-											}
+											}</p>
 											
-										</div>
+										</div> */}
 								</div>
 								<span className="cart-close" onClick={() => handleAction('delete', cart.id, cart.carts_id)}>&times;</span>
 							</li>
@@ -523,7 +444,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 				
 			
 			
-	
+			
 				{/* CART PRODUCTS LISTING END */}
 				<div className="sideBar-form">
 					<form onSubmit={handleSubmit}>
@@ -638,13 +559,13 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 						<div className="payment-type">
 							<div className="pay-option">
 							<label> Pickup Time</label>
-								<input type="time" name="pickup_time" className="form-control" 	onChange={handleChange} required/>
+								<input type="time" name="pickup_time" class="form-control" 	onChange={handleChange} required/>
 								
 							</div>
 							
 							<div className="pay-option">
 							<label> Pickup Date</label> 
-								<input type="text" name="pickup_date" className="form-control" defaultValue={currentDate} required readOnly/>
+								<input type="text" name="pickup_date" class="form-control" defaultValue={currentDate} required readOnly/>
 							</div>		
 						</div>	
 						
@@ -765,10 +686,10 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 						</>
 						}
 						<div className="form-button-flex">
-							<button type="button" className={`btn rectangular-btn ${tip==0 ? 'active' : ''}`} onClick={()=>addTip(0,'auto')}>No Tip</button>
-							<button type="button" className={`btn rectangular-btn ${tip==1 ? 'active' : ''}`} onClick={()=>addTip(1,'auto')}>$1</button>
-							<button type="button" className={`btn rectangular-btn ${tip==3 ? 'active' : ''}`} onClick={()=>addTip(3,'auto')}>$3</button>
-							<button type="button" className={`btn rectangular-btn ${customTip ? 'active' : ''}`} onClick={()=>{addTip(0,'custom');setCustomTip(true);}}>Custom</button>
+							<button type="button" className={`btn rectangular-btn ${tip==0 ? 'active' : ''}`} onClick={()=>addTip(0)}>No Tip</button>
+							<button type="button" className={`btn rectangular-btn ${tip==1 ? 'active' : ''}`} onClick={()=>addTip(1)}>$1</button>
+							<button type="button" className={`btn rectangular-btn ${tip==3 ? 'active' : ''}`} onClick={()=>addTip(3)}>$3</button>
+							<button type="button" className={`btn rectangular-btn ${customTip ? 'active' : ''}`} onClick={()=>{addTip(0);setCustomTip(true);}}>Custom</button>
 						</div>
 						
 						{customTip &&
@@ -780,7 +701,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 								min={0}
 								value={values.tip}
 								errors={errors.tip}
-								onChange={e => addTip(e.target.value,'custom')}
+								onChange={handleChange}
 								/>
 						</div>
 						}
@@ -792,7 +713,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 						<div className="price-checkout">
 							<div>
 								<p>Subtotal</p>
-								<p className="price" id="subtotal">${ (parseFloat(totalPrice)) }</p>
+								<p className="price">${ (parseFloat(totalPrice) + parseFloat(tip)).toFixed(2) }</p>
 							</div>							
 							
 							<div>
@@ -809,13 +730,13 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 							{discount.discount &&
 							<div>
 								<p>Discount</p>
-								<p className="price" >{discount.coupon_type=='fixed'?'$':''}{ discount.discount }{discount.coupon_type=='percentage'?'%':''}</p>
+								<p className="price">{discount.coupon_type=='fixed'?'$':''}{ discount.discount }{discount.coupon_type=='percentage'?'%':''}</p>
 							</div>
 							}
 							
 							<div>
 								<p><strong>Total</strong></p>
-								<p className="price" id="total">${ (parseFloat(totalPrice)) }</p>
+								<p className="price">${ parseFloat(payAmount).toFixed(2) }</p>
 							</div>
 							
 							

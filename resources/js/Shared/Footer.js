@@ -77,7 +77,7 @@ export default () => {
 					</div>
 				</div>
 				<div className="copyRight-text text-center">
-					<p>© ClickOrderPay All rights reserved 2020. Website designed by ATX Web Designs.</p>
+					<p>© ClickOrderPay. All rights reserved 2022. Website designed by ATX Web Designs. ClickOrderPay is a product of ATX The Brand.</p>
 				</div>
 			</div>
 			
