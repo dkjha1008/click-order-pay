@@ -11,8 +11,6 @@ import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 import Layout from '@/Shared/Layout';
 
-
-
 const Ucla = () => {
 	const { props } = usePage();
 	const { category, products, allcat, app, auth, attributes } = props;
@@ -139,12 +137,12 @@ const Ucla = () => {
 		//}
 
 		setProductPopup({});
-		// let size = '';
+		let size = '';
 		if(productSize && productSize.size){
 			// size = JSON.parse(productSize.size).value;
 		}
 		let products_id = productId;
-		let size=productSize.size;
+		
 		
 		let data = { uuid, products_id, store_id, product_type, size };
 		axios.post(route('cart.store'), data).then(res => {
@@ -173,54 +171,32 @@ const Ucla = () => {
 	}
 
 	//select size 
-	function selectSize(attr, product) {
-		// console.log(e.target.value)
-		var elements=document.getElementsByClassName('btn btn-success active');
-		console.log('ssssssssssss',elements);
-
-		
-        for (var i = 0; i < elements.length; i++) {
-            elements[i].classList.remove('active');
-        }
-	
-	
-		 var element = document.getElementById(attr.id);
-          element.classList.add('active');
-		//let attrInfo = JSON.parse(e.target.value)
-		let attrInfo = attr.id;
-		let size=attr.id;
-         
-
-		window.localStorage.setItem("myObject", JSON.stringify(attrInfo));
-		// console.log('attribute',attrInfo);
-		// console.log('product',product);
-		var price=parseInt(product.price)+parseInt(attr.price);
-		document.getElementById("price"+product.id).innerHTML='$'+price;
-		// console.log('size',size);
+	function selectSize(e, product) {
+		console.log(e.target.value)
+		let attrInfo = JSON.parse(e.target.value)
+		window.localStorage.setItem("myObject", JSON.stringify(e.target.value));
 		setProductSize(productSize => ({
-			
 			...productSize,
-			size:attrInfo,
+			size:e.target.value,
 			productId:product.id
 		}));
-		console.log(productSize)
-    //   let newCate =  category.map((cat,key)=>{
+      let newCate =  category.map((cat,key)=>{
 
-	// 					console.log(cat.products)
-	// 					if(cat.products.length>0){
-	// 						let	index = cat.products.indexOf(product)
+						console.log(products)
+						if(cat.products.length>0){
+							let	index = cat.products.indexOf(product)
 
-	// 						if(index!= -1 || index!= '-1'){
-	// 							cat.products[index].attributes.map((attr) => {
-	// 								if(attr.value==attrInfo.value){
-	// 									cat.products[index].price = attrInfo.price
-	// 								}else{
-	// 									cat.products[index].price = cat.products[index].price
-	// 								}
-	// 							})
-	// 						}
+							if(index!= -1 || index!= '-1'){
+								cat.products[index].attributes.map((attr) => {
+									if(attr.value==attrInfo.value){
+										cat.products[index].price = attrInfo.price
+									}else{
+										cat.products[index].price = cat.products[index].price
+									}
+								})
+							}
 
-	// 					}
+						}
 			// products.map((prod,k) => {
 			// 	if(prod.id==product.id){
 			// 		prod.attributes.map((attr,i) => {
@@ -229,9 +205,9 @@ const Ucla = () => {
 			// 		})
 			// 	}
 			// })
-		// })
+		})
 
-		// console.log(newCate);
+		console.log(newCate);
 
   
 	}
@@ -298,7 +274,7 @@ const Ucla = () => {
 																			<div className="product-name" onClick={() => setProductPopup(product)}>
 																				<p className="product-name">{product.title}</p>
 																			</div>
-																			<p className="product-price" id={'price'+product.id}>${product.price}</p>
+																			<p className="product-price">${product.price}</p>
 																			{product.qty == 0 &&
 																				<span className="out-stock">Out of Stock</span>
 																			}
@@ -307,15 +283,16 @@ const Ucla = () => {
 																				return (
 																					<div key={key}>
 																						<label>{attr.attribute}</label>
-																						
-																						{product.attributes.length > 0 && product.attributes.map((att, key) => {
-																							return (
-																								att.attributes_id == attr.id ? (
-																									<button type="button" className="btn btn-success" id={att.id} onClick={()=>selectSize(att, product)} key={key}>{att.value}</button>
-																								) :''
 
-																							);
-																						})}
+																						<select name={attr.attribute} onChange={ (e) => selectSize(e, product) }>
+																							<option value="">Select {attr.attribute}</option>
+																							{product.attributes.length > 0 && product.attributes.map((att, key) => {
+																								return (
+																									att.attributes_id == attr.id ? (<option value={JSON.stringify(att)} key={key}>{att.value}</option>) : ''
+
+																								);
+																							})}
+																						</select>
 																					</div>
 																				)
 																			})}
@@ -428,7 +405,6 @@ const Ucla = () => {
 								<p className="product-name">{productPopup.title}</p>
 								<p className="product-price">${productPopup.price}</p>
 								<p className="product-description">{productPopup.description}</p>
-								<h3 className='product_heading'>Nutritional Description</h3>
 								<p className="product-nutrition_info"><div dangerouslySetInnerHTML={{ __html: productPopup.nutrition_info }} /></p>
 								<button className="cart-btn pink-btn-design" onClick={() => favourite(productPopup.id)}>{userFavourite.includes(productPopup.id) ? 'Remove Favorite' : 'Add To Favorite'}</button>
 

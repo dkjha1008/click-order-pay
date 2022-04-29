@@ -72,6 +72,7 @@ class CategoryController extends Controller
 			$store->image = $image;
 		}
 		
+		$store->store_id = auth()->user()->store->id;
 		$store->name = $request->name;
 		$store->slug = Str::slug($request->name, '-');
 		$store->status = $request->status;
@@ -117,6 +118,7 @@ class CategoryController extends Controller
 			$category->image = $image;
 		}
 		
+		$category->store_id = auth()->user()->store->id;
 		$category->name = $request->name;
 		$category->slug = Str::slug($request->name, '-');
 		$category->status = $request->status;

@@ -47,19 +47,19 @@
 					</a>
 				</li>
 				
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<a href="{{ route('admin.category') }}" class="nav-link {{ @$title['active']=='category' ? 'active' : '' }}">
 						<i class="nav-icon fas fa-list"></i>
 						<p>Category</p>
 					</a>
-				</li>
+				</li> -->
 				
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<a href="{{ route('admin.products') }}" class="nav-link {{ @$title['active']=='products' ? 'active' : '' }}">
 						<i class="nav-icon fas fa-box-open"></i>
 						<p>Products</p>
 					</a>
-				</li>
+				</li> -->
 				
 				<li class="nav-item">
 					<a href="{{ route('admin.promocode') }}" class="nav-link {{ @$title['active']=='promocode' ? 'active' : '' }}">

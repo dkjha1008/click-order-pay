@@ -115,7 +115,7 @@ class StoreProductController extends Controller
 		);
 		$attributes = Attribute::pluck('attribute','id');
 		$relatedProducts = Products::where('status','1')->where('is_delete','0')->where('store_id',\Auth::user()->id)->pluck('title','id');
-		$category = Category::where('status', '1')->where('is_delete', '0')->orderBy('id', 'desc')->pluck('name', 'id');
+		$category = Category::where('status', '1')->where('is_delete', '0')->where('store_id', auth()->user()->store->id)->orderBy('id', 'desc')->pluck('name', 'id');
 		return view('store.product.create', compact('title','category','relatedProducts','attributes'));
 	}
 	
@@ -201,7 +201,7 @@ class StoreProductController extends Controller
 		$attributes = Attribute::pluck('attribute','id');
 		$relatedProducts = Products::where('status','1')->where('is_delete','0')->where('store_id',\Auth::user()->id)->pluck('title','id');
 		$relatedProducts = Products::where('status','1')->where('is_delete','0')->pluck('title','id');
-		$category = Category::where('status', '1')->where('is_delete', '0')->orderBy('id', 'desc')->pluck('name', 'id');
+		$category = Category::where('status', '1')->where('is_delete', '0')->where('store_id', auth()->user()->store->id)->orderBy('id', 'desc')->pluck('name', 'id');
 		return view('store.product.edit', compact('title', 'product', 'category','relatedProducts', 'attributes'));
     }
 	

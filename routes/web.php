@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Store\StoreProductController;
 use App\Http\Controllers\Store\StoreOrdersController;
 use App\Http\Controllers\Store\StoreDashboardController;
+use App\Http\Controllers\Store\StoreCategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -150,7 +152,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('/daily-sales', [OrdersController::class, 'dailysales'])->name('admin.dailysales');
 		
 		//category
-		Route::group(['prefix' => 'category', 'middleware' => ['role:admin']], function(){
+		Route::group(['prefix' => 'category', 'middleware' => ['role:admin|store']], function(){
 			Route::get('/', [CategoryController::class, 'index'])->name('admin.category');
 			Route::get('/create', [CategoryController::class, 'create'])->name('admin.category.create');
 			Route::post('/store', [CategoryController::class, 'store'])->name('admin.category.store');
@@ -282,6 +284,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
 				Route::get('/payment/{order}', [StoreOrdersController::class, 'orderPayment'])->name('store.orders.payment');
 				Route::get('/cancle/{order}', [StoreOrdersController::class, 'action'])->name('store.orders.cancle');
 			});
+
+
+
+			//category
+		Route::group(['prefix' => 'category', 'middleware' => ['role:store']], function(){
+			Route::get('/', [StoreCategoryController::class, 'index'])->name('store.category');
+			Route::get('/create', [StoreCategoryController::class, 'create'])->name('store.category.create');
+			Route::post('/store', [StoreCategoryController::class, 'store'])->name('store.category.store');
+			Route::post('/store', [StoreCategoryController::class, 'store'])->name('store.category.store');
+			Route::get('/{category}/edit', [StoreCategoryController::class, 'edit'])->name('store.category.edit');
+			Route::patch('/{category}/update', [StoreCategoryController::class, 'update'])->name('store.category.update');
+			Route::delete('/{category}/destroy', [StoreCategoryController::class, 'destroy'])->name('store.category.destroy');
+			Route::get('/position/{category}/{action}', [StoreCategoryController::class, 'categoryPosition'])->name('store.category.position');
+		});
+
+
 
 	});
 	

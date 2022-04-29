@@ -61,7 +61,7 @@ if(@$product){
     {!! Form::label('related_products','Select Related Products', ['class' => 'control-label']) !!}
     {!! Form::select('related_products[]', $relatedProducts, $ids ?? null, ['multiple'=>'multiple', 'class' => 'form-control js-example-basic-multiple-limit js-states' . ($errors->has('related_products') ? ' is-invalid' : ''),'placeholder' => '-- Select products --' ]) !!}
     {!! $errors->first('related_products', '<span class="help-block">:message</span>') !!}
-</div>
+</div> 
 
 
 <div class="form-group {!! ($errors->has('product_type') ? 'has-error' : '') !!}">

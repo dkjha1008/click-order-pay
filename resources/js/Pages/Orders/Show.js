@@ -141,7 +141,7 @@ const Show = () => {
 								
 								
 								<div className="product-price">
-									<p className="price">${product.pivot.price*product.pivot.quantity}</p>
+									<p className="price">${product.pivot.price * product.pivot.quantity}</p>
 								</div>
 
 								
