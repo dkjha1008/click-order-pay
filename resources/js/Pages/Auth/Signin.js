@@ -16,6 +16,7 @@ export default () => {
 	const [sending, setSending] = useState(false);
 	const [otpForm, setOtpForm] = useState(false);
 	const [values, setValues] = useState({
+		type: 'user',
 		phone_number: '',
 		password: '',
 		otp: '',
@@ -79,11 +80,36 @@ export default () => {
 							<div className="form-grouph form-heading text-center">
 								<h2>login</h2>
 							</div>
+
+							<div className="row mb-4">
+								<div className="col-md-6">
+									<button type="button"
+										name="type"
+										value="user"
+										onClick={handleChange}
+										className={`btn btn-lg btn-block btn-${values.type=='user' ? 'dark' : 'light' }`}
+										>
+										Customer
+									</button>
+								</div>
+
+								<div className="col-md-6">
+									<button type="button"
+										name="type"
+										value="store"
+										onClick={handleChange}
+										className={`btn btn-lg btn-block btn-${values.type=='store' ? 'dark' : 'light' }`}
+										>
+										Store
+									</button>
+								</div>
+							</div>
+
 							<div className="form-grouph input-design">
 								<TextInput
-									placeholder="Email/ Phone Number"
+									placeholder={values.type=='store' ? 'Email' : 'Email/ Phone Number' }
 									name="phone_number"
-									type="number"
+									type="text"
 									value={values.phone_number}
 									errors={errors.phone_number}
 									onChange={handleChange}

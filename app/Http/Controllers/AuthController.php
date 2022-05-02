@@ -132,9 +132,11 @@ class AuthController extends Controller
 			}
 		}
 
-		$check = User::where('phone_number', $request->phone_number)->count();		
-		if($check>0){
-			return response(['type'=>'error', 'message'=>'Phone number already exist']);
+		if(@$request->phone_number){
+			$check = User::where('phone_number', $request->phone_number)->count();
+			if($check>0){
+				return response(['type'=>'error', 'message'=>'Phone number already exist']);
+			}
 		}
 
 		$checkEmail = User::where('email', $request->email)->count();		
