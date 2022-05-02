@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Request as InertiaRequest;
 use Illuminate\Support\Facades\Redirect;
 
 use App\Models\User;
+use App\Models\Store;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\VerifyEmail;
 use Validator;
 
 class AuthController extends Controller
@@ -26,7 +29,9 @@ class AuthController extends Controller
 	//...
 	public function loginVerify(Request $request)
 	{
-		$user = User::where('phone_number', $request->phone_number)->first();
+		$field = filter_var($request->phone_number, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+
+		$user = User::where($field, $request->phone_number)->first();
 		
 		if(@$user){
 			//create user
@@ -53,14 +58,18 @@ class AuthController extends Controller
 					$otp = rand(100000, 999999);
 					$message = 'Your OTP: '.$otp;
 					
-					$res = message($request->phone_number, $message);
+					//email notifier
+					Notification::route('mail', $request->email)
+						->notify(new VerifyEmail($user->name, $otp));
+
+					//$res = message($request->phone_number, $message);
 					
-					if(@$res){
+					//if(@$res){
 						$user->otp = $otp;
 						$user->save();
 						
-						return response(['type'=>'success', 'message'=>'Phone number not verifies', 'otp'=>true]);
-					}
+						return response(['type'=>'success', 'message'=>'Email not verifies', 'otp'=>true]);
+					//}
 					return response(['type'=>'error', 'message'=>'Server error! Try again']);
 				}
 			}
@@ -73,11 +82,13 @@ class AuthController extends Controller
 	}
 	
 	//...
-	public function login()
+	public function login(Request $request)
 	{
+		$field = filter_var($request->phone_number, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+
 		Auth::attempt(
 			InertiaRequest::validate([
-				'phone_number' => ['required', 'digits_between:10,12'],
+				$field => ['required'],
 				'password' => ['required', 'min:6'],
 			])
 		);
@@ -114,11 +125,21 @@ class AuthController extends Controller
 	//...
 	public function signup(Request $request)
 	{
-		
-		$check = User::where('phone_number', $request->phone_number)->count();
-		
+		if($request->type=='store'){
+			$checkStore = Store::where('title', $request->name)->count();
+			if($checkStore>0){
+				return response(['type'=>'error', 'message'=>'Company Name already exist']);
+			}
+		}
+
+		$check = User::where('phone_number', $request->phone_number)->count();		
 		if($check>0){
 			return response(['type'=>'error', 'message'=>'Phone number already exist']);
+		}
+
+		$checkEmail = User::where('email', $request->email)->count();		
+		if($checkEmail>0){
+			return response(['type'=>'error', 'message'=>'Email already exist']);
 		}
 		
 		if(strlen(trim($request->password)) <= 6){
@@ -135,19 +156,35 @@ class AuthController extends Controller
 			$otp = rand(100000, 999999);
 			
 			$message = 'Your OTP: '.$otp;
-			$res = message($request->phone_number, $message);
 			
-			if(@$res){
+			//email notifier
+			Notification::route('mail', $request->email)
+					->notify(new VerifyEmail($request->name, $otp));
+
+			//$res = message($request->phone_number, $message);
+
+			//if(@$res){
 				$user = new User;
+				$user->role = $request->type;
+				$user->name = $request->name;
 				$user->phone_number = $request->phone_number;
 				$user->email = $request->email;
 				$user->password = Hash::make($request->password);
 				$user->otp = $otp;
 				$user->save();
+
+				if($request->type=='store')
+				{
+					Store::create([
+						'users_id'=> $user->id,
+						'title'  => $request->name,
+						'slug'   => Str::slug($request->name, '-')
+					]);
+				}
 				
-				return response(['type'=>'success', 'message'=>'Code is send to your mobile number please fill it verify your account']);
-			}
-			return response(['type'=>'error', 'message'=>'Invalid Phone Number']);
+				return response(['type'=>'success', 'message'=>'Code is send to your Email, Please fill it to verify your account']);
+			//}
+			return response(['type'=>'error', 'message'=>'Invalid Email']);
 		}
 		catch(\Exception $e) {
 			return response(['type'=>'error', 'message'=>$e->getMessage()]);
@@ -159,9 +196,9 @@ class AuthController extends Controller
 	
 	//---
 	
-	public function signupOtp(Request $request){
-		
-		$check = User::where('phone_number', $request->phone_number)->first();
+	public function signupOtp(Request $request){		
+
+		$check = User::where('email', $request->email)->first();
 	
 		if(@$check){
 			if($check->otp == $request->otp){
@@ -172,7 +209,7 @@ class AuthController extends Controller
 				//---
 				Auth::attempt(
 					InertiaRequest::validate([
-						'phone_number' => ['required'],
+						'email' => ['required'],
 						'password' => ['required'],
 					])
 				);
@@ -196,7 +233,7 @@ class AuthController extends Controller
 	//...
 	public function password(Request $request)
 	{
-		$user = User::where('phone_number', $request->phone_number)->first();
+		$user = User::where('email', $request->phone_number)->first();
 		
 		if(@$user){
 			//create user
@@ -205,15 +242,20 @@ class AuthController extends Controller
 				$otp = rand(100000, 999999);
 				$message = 'Your OTP: '.$otp;
 				
-				$res = message($request->phone_number, $message);
+
+				//email notifier
+				Notification::route('mail', $request->email)
+					->notify(new VerifyEmail($request->name, $otp));
+
+				//$res = message($request->phone_number, $message);
 				
-				if(@$res){
+				//if(@$res){
 					$user->otp = $otp;
 					$user->save();
 					
-					return response(['type'=>'success', 'message'=>'6 Digit code is sent to registered mobile number please fill it to reset your password']);
-				}
-				return response(['type'=>'error', 'message'=>'Invalid Phone Number']);
+					return response(['type'=>'success', 'message'=>'6 Digit code is sent to registered email, Please fill it to reset your password']);
+				//}
+				return response(['type'=>'error', 'message'=>'Invalid Email']);
 			}
 			
 			if($request->type=='otp'){
@@ -243,14 +285,15 @@ class AuthController extends Controller
 			}			
 		}
 		else {
-			return response(['type'=>'error', 'message'=>'Invalid Phone Number']);		
+			return response(['type'=>'error', 'message'=>'Invalid Email']);		
 		}
 	}
 	
 	//...
 	public function passwordInertia(Request $request)
 	{
-		$user = User::where('phone_number', $request->phone_number)->first();
+
+		$user = User::where('email', $request->phone_number)->first();
 		
 		if(@$user){
 			//...
@@ -274,30 +317,35 @@ class AuthController extends Controller
 			}			
 		}
 		else {
-			return Redirect::back()->with('error', 'Invalid Phone Number');
+			return Redirect::back()->with('error', 'Invalid Email');
 		}
 	}
 	
 
 	public function resendOtp(Request $request){
-		$user = User::where('phone_number', $request->phone_number)->first();
+
+		$user = User::where('email', $request->email)->first();
 		
 		if(@$user){
 			$otp = rand(100000, 999999);
 				$message = 'Your OTP: '.$otp;
 				
-				$res = message($request->phone_number, $message);
+				//$res = message($request->phone_number, $message);
 				
-				if(@$res){
+				//email notifier
+				Notification::route('mail', $request->email)
+					->notify(new VerifyEmail($request->name, $otp));
+
+				//if(@$res){
 					$user->otp = $otp;
 					$user->save();
 					
-					return response(['type'=>'success', 'message'=>'6 Digit code is sent to registered mobile number please fill it to reset your password']);
-				}
-				return response(['type'=>'error', 'message'=>'Invalid Phone Number']);
+					return response(['type'=>'success', 'message'=>'6 Digit code is sent to registered email, Please fill it to reset your password']);
+				//}
+				return response(['type'=>'error', 'message'=>'Invalid Email']);
 		}
 		else {
-			return Redirect::back()->with('error', 'Invalid Phone Number');
+			return Redirect::back()->with('error', 'Invalid Email');
 		}
 	}
 

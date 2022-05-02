@@ -16,6 +16,9 @@ export default () => {
 	const [modalOtp, setModalOtp] = useState(false);
 	
 	const [values, setValues] = useState({
+		type: 'user',
+		name: '',
+		store_name: '',
 		phone_number: '',
 		email:'',
 		password: '',
@@ -76,7 +79,42 @@ export default () => {
 							<h2>Sign Up</h2>
 							</div>
 							
-							
+							<div className="row mb-4">
+								<div className="col-md-6">
+									<button type="button"
+										name="type"
+										value="user"
+										onClick={handleChange}
+										className={`btn btn-lg btn-block btn-${values.type=='user' ? 'dark' : 'light' }`}
+										>
+										Customer
+									</button>
+								</div>
+
+								<div className="col-md-6">
+									<button type="button"
+										name="type"
+										value="store"
+										onClick={handleChange}
+										className={`btn btn-lg btn-block btn-${values.type=='store' ? 'dark' : 'light' }`}
+										>
+										Store
+									</button>
+								</div>
+							</div>
+
+							<div className="form-grouph input-design">
+								<TextInput
+									placeholder={values.type=='store' ? 'Company Name' : 'Name' }
+									name="name"
+									type="text"
+									value={values.name}
+									errors={errors.name}
+									onChange={handleChange}
+									required={true}
+									/>
+							</div>
+
 							<div className="form-grouph input-design">
 								<TextInput
 									placeholder="Phone Number"

@@ -81,7 +81,7 @@ export default () => {
 							</div>
 							<div className="form-grouph input-design">
 								<TextInput
-									placeholder="Phone Number"
+									placeholder="Email/ Phone Number"
 									name="phone_number"
 									type="number"
 									value={values.phone_number}

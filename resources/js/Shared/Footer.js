@@ -24,7 +24,7 @@ export default () => {
 			<a href="javascript:void(0)" onClick={() => scrollTop()}><i className="fas fa-angle-up"></i></a>
 			</div>
 			<div className="container">
-				<div className="footer-flex">
+				<div className="footer-flex d-none">
 					<div className="footer-flex-div">
 						<div className="footer-column footer-column-1 text-center">
 							<div className="footer-logo">
@@ -76,8 +76,15 @@ export default () => {
 						</div>
 					</div>
 				</div>
+				<div className="footer-flex">
+					<div className="footer-logo mx-auto">
+						<InertiaLink href={route('home')}>
+						<img src="images/logo.png"></img>
+						</InertiaLink>						
+					</div>
+				</div>
 				<div className="copyRight-text text-center">
-					<p>© ClickOrderPay. All rights reserved 2022. Website designed by ATX Web Designs. ClickOrderPay is a product of ATX The Brand.</p>
+					<p>ClickOrderPay. All rights reserved 2022. Website designed by <a href="https://www.atxwebdesigns.com/" target="_blank">ATX Web Designs</a>. ClickOrderPay is a product of ATX The Brand.</p>
 				</div>
 			</div>
 			
