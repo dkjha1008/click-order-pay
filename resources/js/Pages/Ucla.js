@@ -207,7 +207,7 @@ const Ucla = () => {
 			// })
 		})
 
-		console.log(newCate);
+		//console.log(newCate);
 
   
 	}

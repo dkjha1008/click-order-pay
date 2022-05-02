@@ -213,11 +213,13 @@ class FrontController extends Controller
 	 
 		$request = InertiaRequest::only('search', 'type','store');
 		if(!isset($request['store'])) return redirect('/');
-		$storeId = Store::where('slug',$request['store'])
-					
-					->first()->users_id;
-		$category = Category::where('status', '1')->where('is_delete', '0');
 		
+		$storeId = Store::where('slug',$request['store'])					
+					->first()->users_id;
+
+		$category = Category::where('status', '1')->where('is_delete', '0')
+			->where('store_id', $storeId);
+
 		$allcat = $category->orderBy('reorder', 'asc')->get();
 		
 		if(@$request['type']){
@@ -226,11 +228,13 @@ class FrontController extends Controller
 		$category = $category->orderBy('id', 'asc')->get();
 		
 		foreach($category as $cat){
-			$products = Products::with('attributes')->where('category', $cat->id)
+			$products = Products::with('attributes')
+				->where('category', $cat->id)
 				->where('status', '1')
 				->where('store_id',$storeId )
 				->where('is_delete', '0')
-				->orderBy('reorder', 'asc')->get();
+				->orderBy('reorder', 'asc')
+				->get();
 			// dd($products[2]->attributes);
 			
 			// $modified = $products->map(function($item, $key) {
