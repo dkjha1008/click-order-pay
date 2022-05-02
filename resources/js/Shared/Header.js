@@ -158,6 +158,8 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 	function handleSubmitLogin(e) {
 		e.preventDefault();
 		setSending(true);
+
+		valuesLogin['email'] = valuesLogin.phone_number;
 		axios.post(route('signin.verify'), valuesLogin).then((res) => {
 			if(res.data.type=='success'){
 				if(res.data.otp){
@@ -179,7 +181,10 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 	
 	//----signup modal
 	const [valuesSignup, setValuesSignup] = useState({
+		type: 'user',
+		name: '',
 		phone_number: '',
+		email:'',
 		password: '',
 		password_confirmation: '',
 		otp: ''
@@ -396,9 +401,9 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 						</div>
 						<div className="form-grouph input-design">
 							<TextInput
-								placeholder="Phone Number"
+								placeholder="Email/ Phone Number"
 								name="phone_number"
-								type="number"
+								type="text"
 								value={valuesLogin.phone_number}
 								errors={errors.phone_number}
 								onChange={handleChangeLogin}
@@ -415,7 +420,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 								/>
 						</div>
 						<div className="form-grouph forget-password text-right">
-							<a href="#" onClick={() => setModalType('forgot')}>Forget Password?</a>
+							<a href="#" onClick={() => setModalType('forgot')}>Forgot Password?</a>
 						</div>
 						</>
 						}
@@ -450,7 +455,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 							</LoadingButton>
 						</div>
 						<div className="form-grouph signup-text text-center">
-							<p>New to Shmacked? 
+							<p>New to {app.name}? 
 								<a href="#" onClick={() => setModalType('register')}> Sign Up</a>
 							</p>
 						</div>
@@ -466,6 +471,44 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 							<span onClick={()=>closeModal()} className="pull-right">x</span>
 							<h2>Sign Up</h2>
 						</div>
+
+						<div className="row mb-4">
+							<div className="col-md-6">
+								<button type="button"
+									name="type"
+									value="user"
+									onClick={handleChangeSignup}
+									className={`btn btn-lg btn-block btn-${valuesSignup.type=='user' ? 'dark' : 'light' }`}
+									>
+									Customer
+								</button>
+							</div>
+
+							<div className="col-md-6">
+								<button type="button"
+									name="type"
+									value="store"
+									onClick={handleChangeSignup}
+									className={`btn btn-lg btn-block btn-${valuesSignup.type=='store' ? 'dark' : 'light' }`}
+									>
+									Store
+								</button>
+							</div>
+						</div>
+
+						<div className="form-grouph input-design">
+							<TextInput
+								placeholder={valuesSignup.type=='store' ? 'Company Name' : 'Name' }
+								name="name"
+								type="text"
+								value={valuesSignup.name}
+								errors={errors.name}
+								onChange={handleChangeSignup}
+								required={true}
+								/>
+						</div>
+
+						{valuesSignup.type=='user' &&
 						<div className="form-grouph input-design">
 							<TextInput
 								placeholder="Phone Number"
@@ -474,6 +517,20 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 								value={valuesSignup.phone_number}
 								errors={errors.phone_number}
 								onChange={handleChangeSignup}
+								required={true}
+								/>
+						</div>
+						}
+
+						<div className="form-grouph input-design">
+							<TextInput
+								placeholder="Email"
+								name="email"
+								type="email"
+								value={valuesSignup.email}
+								errors={errors.email}
+								onChange={handleChangeSignup}
+								required={true}
 								/>
 						</div>
 						<div className="form-grouph input-design">
@@ -561,7 +618,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 						{otpField=='forgot' &&
 						<div className="form-grouph input-design">
 							<TextInput
-								placeholder="Phone Number"
+								placeholder="Email"
 								name="phone_number"
 								type="number"
 								value={valuesForgot.phone_number}

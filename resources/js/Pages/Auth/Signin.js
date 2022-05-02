@@ -37,6 +37,7 @@ export default () => {
 		e.preventDefault();
 		setSending(true);
 		
+		values['email'] = values.phone_number;
 		axios.post(route('signin.verify'), values).then((res) => {
 			if(res.data.type=='success'){
 				if(res.data.otp){

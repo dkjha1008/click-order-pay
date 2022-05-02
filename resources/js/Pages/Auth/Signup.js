@@ -18,7 +18,6 @@ export default () => {
 	const [values, setValues] = useState({
 		type: 'user',
 		name: '',
-		store_name: '',
 		phone_number: '',
 		email:'',
 		password: '',

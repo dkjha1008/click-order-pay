@@ -77,7 +77,7 @@ class AuthController extends Controller
 			return response(['type'=>'success', 'message'=>'Success', 'otp'=>false]);
 		}
 		else {
-			return response(['type'=>'error', 'message'=>'Invalid phone number']);
+			return response(['type'=>'error', 'message'=>'Invalid Credientials']);
 		}
 	}
 	
@@ -85,6 +85,7 @@ class AuthController extends Controller
 	public function login(Request $request)
 	{
 		$field = filter_var($request->phone_number, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone_number';
+
 
 		Auth::attempt(
 			InertiaRequest::validate([
@@ -95,6 +96,7 @@ class AuthController extends Controller
 		
 		if(Auth::check()==true){
 			$user = Auth::user();
+			
 			if(!$user->verified_at){
 				$user->verified_at = date('Y-m-d H:i:s');
 			}
