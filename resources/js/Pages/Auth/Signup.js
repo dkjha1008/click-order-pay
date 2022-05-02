@@ -115,6 +115,7 @@ export default () => {
 									/>
 							</div>
 
+							{values.type=='user' &&
 							<div className="form-grouph input-design">
 								<TextInput
 									placeholder="Phone Number"
@@ -126,6 +127,8 @@ export default () => {
 									required={true}
 									/>
 							</div>
+							}
+
 							<div className="form-grouph input-design">
 								<TextInput
 									placeholder="Email"
