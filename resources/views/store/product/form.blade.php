@@ -59,14 +59,14 @@ if(@$product){
 
 <div class="form-group {!! ($errors->has('related_products') ? 'has-error' : '') !!}">
     {!! Form::label('related_products','Select Related Products', ['class' => 'control-label']) !!}
-    {!! Form::select('related_products[]', $relatedProducts, $ids ?? null, ['multiple'=>'multiple', 'class' => 'form-control js-example-basic-multiple-limit js-states' . ($errors->has('related_products') ? ' is-invalid' : ''),'placeholder' => '-- Select products --' ]) !!}
+    {!! Form::select('related_products[]', $relatedProducts, $ids ?? null, ['multiple'=>'multiple', 'class' => 'form-control js-example-basic-multiple-limit js-states' . ($errors->has('related_products') ? ' is-invalid' : '') ]) !!}
     {!! $errors->first('related_products', '<span class="help-block">:message</span>') !!}
 </div> 
 
 
 <div class="form-group {!! ($errors->has('product_type') ? 'has-error' : '') !!}">
     {!! Form::label('product_type','Select Product Type', ['class' => 'control-label']) !!}
-    {!! Form::select('product_type', ['Simple'=>'Simple','Variable'=>'Variable'], $type ?? null, ['id'=>'product_type' ,'class' => 'form-control js-states' . ($errors->has('product_type') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Type --' ]) !!}
+    {!! Form::select('product_type', ['Simple'=>'Simple','Variable'=>'Variable'], $type ?? null, ['id'=>'product_type' ,'class' => 'form-control js-states' . ($errors->has('product_type') ? ' is-invalid' : '') ]) !!}
     {!! $errors->first('product_type', '<span class="help-block">:message</span>') !!}
 </div>
 <div class="attribute_fun" style="">
@@ -82,7 +82,7 @@ if(@$product){
 
 <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
     {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
-    {!! Form::select('attribute[]', $attributes, $proAttr->attributes_id ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attributes --' ]) !!}
+    {!! Form::select('attribute[]', $attributes, $proAttr->attributes_id ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : '')]) !!}
     {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
 </div>
 <input type="hidden" name="attr_id[]" value="{{$proAttr->id}}">
@@ -97,7 +97,7 @@ $attrValues  = array_combine($arr,$arr);
 
     <div class="form-group {!! ($errors->has('store') ? 'has-error' : '') !!}">
         {!! Form::label('attribute_values','Select Attribute Value', ['class' => 'control-label']) !!}
-        {!! Form::select('attribute_values[]',$attrValues, $proAttr->value ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : ''),'placeholder' => '-- Select Attribute value --' ]) !!}
+        {!! Form::select('attribute_values[]',$attrValues, $proAttr->value ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : '') ]) !!}
         {!! $errors->first('attribute_values', '<span class="help-block">:message</span>') !!}
     </div>
  </div>  
@@ -125,7 +125,7 @@ $attrValues  = array_combine($arr,$arr);
 
     <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
         {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
-        {!! Form::select('attribute[]', $attributes, $type ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attributes --' ]) !!}
+        {!! Form::select('attribute[]', $attributes, $type ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : '') ]) !!}
         {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
     </div>
 
@@ -137,7 +137,7 @@ $attrValues  = array_combine($arr,$arr);
    
         <div class="form-group {!! ($errors->has('store') ? 'has-error' : '') !!}">
             {!! Form::label('attribute_values','Select Attribute Value', ['class' => 'control-label']) !!}
-            {!! Form::select('attribute_values[]', $sizes, $size ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : ''),'placeholder' => '-- Select Attribute value --' ]) !!}
+            {!! Form::select('attribute_values[]', $sizes, $size ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : '') ]) !!}
             {!! $errors->first('attribute_values', '<span class="help-block">:message</span>') !!}
         </div>
      </div>  
@@ -189,7 +189,7 @@ $( document ).ready(function() {
 	});
 
     $('#product_type').on('change',function(){
-        debugger;
+        //debugger;
         const productType = $(this).val();
         productType=='Variable' ? $('.attribute_fun').show() : $('.attribute_fun').hide()
     })
@@ -228,14 +228,14 @@ $( document ).ready(function() {
                     <div class="attribute-scope">
                         <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
                             {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
-                            {!! Form::select('attribute[]',$attributes, $type ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attribute --' ]) !!}
+                            {!! Form::select('attribute[]',$attributes, $type ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : '') ]) !!}
                             {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
                         </div>
 
 
                             <div class="form-group {!! ($errors->has('store') ? 'has-error' : '') !!}">
                                 {!! Form::label('attribute_values','Select Attribute Value', ['class' => 'control-label']) !!}
-                                {!! Form::select('attribute_values[]', [],  null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : ''),'placeholder' => '-- Select Attribute value --' ]) !!}
+                                {!! Form::select('attribute_values[]', [],  null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : '') ]) !!}
                                 {!! $errors->first('attribute_values', '<span class="help-block">:message</span>') !!}
                             </div>
                      </div>
@@ -263,7 +263,7 @@ $( document ).ready(function() {
 		
 		$(document).on('click', '.deleteId', function(event) {
 			event.preventDefault();
-            debugger;
+            //debugger;
 			$(this).parents('.child').remove();
 			$(this).parents('.child').find('.delId').val('yes');
 		});
@@ -275,7 +275,7 @@ $( document ).ready(function() {
 		});
 
         $(document).on('click','.attribute-val',function (){
-            debugger;
+            //debugger;
             let scope = $(this);
             let attrId = parseInt(scope.val());
          
@@ -287,7 +287,7 @@ $( document ).ready(function() {
                
                 },
                 success: function(data) {
-                    debugger;
+                   // debugger;
                         console.log(data)
                     if(data.data.length>0){
                         let html = '';
@@ -301,10 +301,10 @@ $( document ).ready(function() {
                         scope.parents('.attribute-scope').find('.attr-val').html(html);
                       
                     }
-                    debugger;
+                    //debugger;
                 },
                 error:function(err){
-debugger;
+//debugger;
                 }
             
                

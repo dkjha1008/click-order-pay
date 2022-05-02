@@ -8,6 +8,7 @@
 			<th>ID</th>
 			{{--<th>Producs</th>--}}
 			<th>Amount</th>
+			<th>Admin Amount</th>
 			<th>Payment Type</th>
 			<th>Promocode</th>
 			<th>Status</th>
@@ -45,6 +46,9 @@
 			--}}
 			<td>
 				${{ $order->amount }}
+			</td>
+			<td>
+				${{ $order->amount / 100 }}
 			</td>
 			<td>
 				{{ ucfirst($order->payment_type) }}

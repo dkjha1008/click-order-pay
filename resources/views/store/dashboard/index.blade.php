@@ -43,16 +43,16 @@
 			</a>
 		</div>
 	</div>
-	<!-- <div class="col-12 col-sm-6 col-md-3">
+	<div class="col-12 col-sm-6 col-md-3">
 		<div class="info-box mb-3">
-			<span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+			<span class="info-box-icon bg-warning elevation-1"><i class="fas fa-shopping-cart"></i></span>
 			
-			<a href="{{ ('admin.users') }}" class="info-box-content">
-                <span class="info-box-text">Total Members</span>
-                <span class="info-box-number"></span>
+			<a href="#" class="info-box-content">
+                <span class="info-box-text">Total Admin Sales</span>
+                <span class="info-box-number">${{ number_format($sales/100, 2) }}</span>
 			</a>
 		</div>
-	</div> -->
+	</div>
 </div>
 	
 <div class="row">	
