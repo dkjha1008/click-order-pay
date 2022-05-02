@@ -168,7 +168,9 @@ class StoreProductController extends Controller
 		$store->tag = $request->tag;
 		$store->status = $request->status;
 		$store->store_id = \Auth::id();
-		$store->related_products = implode(',',$request->related_products)??null;
+		if(@$request->related_products){
+			$store->related_products = implode(',',$request->related_products)??null;
+		}
 		$store->product_type = $request->product_type;
 		$store->save();
 
@@ -247,7 +249,9 @@ class StoreProductController extends Controller
 		$product->tag = $request->tag;
 		$product->status = $request->status;
 		$product->store_id = \Auth::id();
-		$product->related_products = implode(',',$request->related_products)??null;
+		if(@$request->related_products){
+			$product->related_products = implode(',',$request->related_products)??null;
+		}
 		$product->product_type = $request->product_type;
 		$product->save();
 
