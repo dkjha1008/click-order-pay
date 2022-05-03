@@ -16,7 +16,7 @@ export default () => {
 	const [otpField, setOtpField] = useState('forgot');
 	
 	const [values, setValues] = useState({
-		phone_number: '',
+		email: '',
 		otp: '',
 		password: '',
 		password_confirmation: '',
@@ -86,11 +86,11 @@ export default () => {
 							</div>
 							<div className="form-grouph input-design">
 								<TextInput
-									placeholder="Phone Number"
-									name="phone_number"
-									type="number"
-									value={values.phone_number}
-									errors={errors.phone_number}
+									placeholder="Email"
+									name="email"
+									type="email"
+									value={values.email}
+									errors={errors.email}
 									onChange={handleChange}
 									/>
 							</div>

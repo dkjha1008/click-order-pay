@@ -141,6 +141,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 	//---login modal
 	const [otpForm, setOtpForm] = useState(false);
 	const [valuesLogin, setValuesLogin] = useState({
+		role: 'user',
 		phone_number: '',
 		password: '',
 		otp: '',
@@ -150,10 +151,19 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 		const value =
 		e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 
-		setValuesLogin(valuesLogin => ({
-			...valuesLogin,
-			[key]: value
-		}));
+		if(key==='role'){
+			setValuesLogin(valuesLogin => ({
+				phone_number:'',
+				password:'',
+				[key]: value
+			}));
+		}
+		else {
+			setValuesLogin(valuesLogin => ({
+				...valuesLogin,
+				[key]: value
+			}));
+		}
 	}
 	function handleSubmitLogin(e) {
 		e.preventDefault();
@@ -181,7 +191,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 	
 	//----signup modal
 	const [valuesSignup, setValuesSignup] = useState({
-		type: 'user',
+		role: 'user',
 		name: '',
 		phone_number: '',
 		email:'',
@@ -194,10 +204,22 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 		const value =
 		e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 
-		setValuesSignup(valuesSignup => ({
-			...valuesSignup,
-			[key]: value
-		}));
+		if(key==='role'){
+			setValuesSignup(valuesSignup => ({
+				name:'',
+				phone_number:'',
+				email:'',
+				password:'',
+				password_confirmation:'',
+				[key]: value
+			}));
+		}
+		else {
+			setValuesSignup(valuesSignup => ({
+				...valuesSignup,
+				[key]: value
+			}));
+		}
 	}	
 	function handleSubmitSignup(e) {
 		e.preventDefault();
@@ -223,7 +245,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 	//----forgot modal
 	const [otpField, setOtpField] = useState('forgot');
 	const [valuesForgot, setValuesForgot] = useState({
-		phone_number: '',
+		email: '',
 		otp: '',
 		password: '',
 		password_confirmation: '',
@@ -399,9 +421,34 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 							<span onClick={()=>closeModal()} className="pull-right">x</span>
 							<h2>login</h2>
 						</div>
+
+						<div className="row mb-4">
+								<div className="col-md-6">
+									<button type="button"
+										name="role"
+										value="user"
+										onClick={handleChangeLogin}
+										className={`btn btn-lg btn-block btn-${valuesLogin.role==='user' ? 'dark' : 'light' }`}
+										>
+										Customer
+									</button>
+								</div>
+
+								<div className="col-md-6">
+									<button type="button"
+										name="role"
+										value="store"
+										onClick={handleChangeLogin}
+										className={`btn btn-lg btn-block btn-${valuesLogin.role==='store' ? 'dark' : 'light' }`}
+										>
+										Store
+									</button>
+								</div>
+							</div>
+
 						<div className="form-grouph input-design">
 							<TextInput
-								placeholder="Email/ Phone Number"
+								placeholder={valuesLogin.role==='store' ? 'Email' : 'Email/ Phone Number' }
 								name="phone_number"
 								type="text"
 								value={valuesLogin.phone_number}
@@ -475,10 +522,10 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 						<div className="row mb-4">
 							<div className="col-md-6">
 								<button type="button"
-									name="type"
+									name="role"
 									value="user"
 									onClick={handleChangeSignup}
-									className={`btn btn-lg btn-block btn-${valuesSignup.type=='user' ? 'dark' : 'light' }`}
+									className={`btn btn-lg btn-block btn-${valuesSignup.role==='user' ? 'dark' : 'light' }`}
 									>
 									Customer
 								</button>
@@ -486,10 +533,10 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 
 							<div className="col-md-6">
 								<button type="button"
-									name="type"
+									name="role"
 									value="store"
 									onClick={handleChangeSignup}
-									className={`btn btn-lg btn-block btn-${valuesSignup.type=='store' ? 'dark' : 'light' }`}
+									className={`btn btn-lg btn-block btn-${valuesSignup.role==='store' ? 'dark' : 'light' }`}
 									>
 									Store
 								</button>
@@ -498,7 +545,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 
 						<div className="form-grouph input-design">
 							<TextInput
-								placeholder={valuesSignup.type=='store' ? 'Company Name' : 'Name' }
+								placeholder={valuesSignup.role==='store' ? 'Company Name' : 'Name' }
 								name="name"
 								type="text"
 								value={valuesSignup.name}
@@ -508,7 +555,7 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 								/>
 						</div>
 
-						{valuesSignup.type=='user' &&
+						{valuesSignup.role==='user' &&
 						<div className="form-grouph input-design">
 							<TextInput
 								placeholder="Phone Number"
@@ -619,10 +666,10 @@ export default ({setCartPopup, cartCount, cartPrice}) => {
 						<div className="form-grouph input-design">
 							<TextInput
 								placeholder="Email"
-								name="phone_number"
-								type="number"
-								value={valuesForgot.phone_number}
-								errors={errors.phone_number}
+								name="email"
+								type="email"
+								value={valuesForgot.email}
+								errors={errors.email}
 								onChange={handleChangeForgot}
 								/>
 						</div>

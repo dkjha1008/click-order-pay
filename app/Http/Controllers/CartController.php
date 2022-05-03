@@ -328,16 +328,30 @@ class CartController extends Controller
 		switch($request->type){
 			case 'plus':
 				if($check->quantity<$product->qty){
-					$check->quantity = $check->quantity + 1;
+
+					$newQty = $check->quantity + 1;
+					$newPrice = ($check->product_price + $check->attribute_price) * $newQty;
+
+					$check->price = $newPrice;
+					$check->quantity = $newQty;
 				}
 				else {
-					$check->quantity = $product->qty;
+					$newQty = $product->qty;
+					$newPrice = ($check->product_price + $check->attribute_price) * $newQty;
+
+					$check->price = $newPrice;
+					$check->quantity = $newQty;
 				}
 				$check->save();
 				break;
 			case 'minus':
 				if($check->quantity>1){
-					$check->quantity = $check->quantity - 1;
+
+					$newQty = $check->quantity - 1;
+					$newPrice = ($check->product_price + $check->attribute_price) * $newQty;
+
+					$check->price = $newPrice;
+					$check->quantity = $newQty;
 					$check->save();
 				}
 			break;

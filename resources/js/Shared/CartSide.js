@@ -54,7 +54,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		cvv: '',
 		expire_month: '',
 		expire_year: '',
-		tip: '1',
+		tip: tip,
 		promo_code: '',
 		uuid: '',
 		pay_amount: '',
@@ -93,11 +93,11 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 			await axios.get(route('cart.data', data)).then(res => {
 				
 				setCartData(res.data.data.cart_product);
-				console.log("datajhjjhjhjhjhjhjhjhjhjhj",res.data.data.cart_product);
+				//console.log("datajhjjhjhjhjhjhjhjhjhjhj",res.data.data.cart_product);
 				setRelatedProducts(res.data.data.cart_product)
 				setCartCount(res.data.count);
 				setRelatedProducts(res.data.relatedProducts);
-				console.log(relatedProducts);
+				//console.log(relatedProducts);
 				
 				setMonths(res.data.months);
 				setYears(res.data.years);
@@ -138,7 +138,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 			setCartData(res.data.data.cart_product);
 			setCartCount(res.data.count);
 			
-			if(current=='ucla'){
+			if(current==='ucla'){
 				setCartPopup(res.data.count, res.data.price);
 			}
 			
@@ -173,14 +173,26 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 	}
 	
 	
-	function addTip(tip){
+	function addTip(tip,type){
+
+		if(type=='auto')
+		{
+			setCustomTip(false);
+		}
+		if(tip && tip >= '0'){
+			tip = tip.replace(/^0+/, '');
+		}
+
+		if(tip == '' || tip == '0'){
+			tip = 0;
+		}
+
 		setTip(tip);
 		
 		setValues(values => ({
 			...values,
 			tip: tip
 		}));
-		setCustomTip(false);
 		
 		//..set total price
 		setPayAmount(parseFloat(totalPrice) + parseFloat(tip) + parseFloat(tax) + parseFloat(deliveryCharges) - discountAmount);
@@ -193,24 +205,11 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 		const value =
 		e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 		
-		if(key=='tip'){
-			let newvalue = parseFloat(value);
-			if(newvalue){
-				newvalue = newvalue.replace(/^0+/, '');
-				newvalue = 0;
-			}
-			else {
-				newvalue = 0;
-			}
-			setTip(newvalue);
-			//..set total price
-			setPayAmount(parseFloat(totalPrice) + parseFloat(newvalue) + parseFloat(tax) + parseFloat(deliveryCharges) - discountAmount);
-		}
+
 		setValues(values => ({
 			...values,
 			[key]: value
 		}));
-		console.log(values)
 	}
 	
 	function useCard(card){
@@ -374,13 +373,16 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 				 <div className="cart-items">
 					<ul className="list-unstyled">
 						{cartData.length>0 && cartData.map((cart, k) => {
-							console.log('cart', cart)
+							//console.log('cart', cart)
 							let image = '';
 							if(cart.product.image){
 							image = 'storage/products/' + cart.product.image;
 							}
 							let tprice = cart.quantity * cart.product.price;
-							totalPrice = totalPrice + tprice;
+							//totalPrice = totalPrice + tprice;
+
+							//set total price guri
+							totalPrice = cart.price;
 							return(
 							<li key={k}>
 								{image &&
@@ -392,7 +394,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 									<h5 className="cart-heading">{cart.product.title}</h5>
 									<p className="product-quantity">{cart.product.description}</p>
 									{cart.type=='Variable' &&
-									<p className="product-quantity">Size: {cart.product.sizes}</p>
+										<p className="product-quantity">Size: {cart.size}, Price: ${cart.attribute_price}</p>
 									
 									}
 									<div className="quantity-flex">
@@ -686,10 +688,10 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 						</>
 						}
 						<div className="form-button-flex">
-							<button type="button" className={`btn rectangular-btn ${tip==0 ? 'active' : ''}`} onClick={()=>addTip(0)}>No Tip</button>
-							<button type="button" className={`btn rectangular-btn ${tip==1 ? 'active' : ''}`} onClick={()=>addTip(1)}>$1</button>
-							<button type="button" className={`btn rectangular-btn ${tip==3 ? 'active' : ''}`} onClick={()=>addTip(3)}>$3</button>
-							<button type="button" className={`btn rectangular-btn ${customTip ? 'active' : ''}`} onClick={()=>{addTip(0);setCustomTip(true);}}>Custom</button>
+							<button type="button" className={`btn rectangular-btn ${tip==0 ? 'active' : ''}`} onClick={()=>addTip(0,'auto')}>No Tip</button>
+							<button type="button" className={`btn rectangular-btn ${tip==1 ? 'active' : ''}`} onClick={()=>addTip(1,'auto')}>$1</button>
+							<button type="button" className={`btn rectangular-btn ${tip==3 ? 'active' : ''}`} onClick={()=>addTip(3,'auto')}>$3</button>
+							<button type="button" className={`btn rectangular-btn ${customTip ? 'active' : ''}`} onClick={()=>{addTip(0,'custom');setCustomTip(true);}}>Custom</button>
 						</div>
 						
 						{customTip &&
@@ -701,7 +703,7 @@ export default ({cartOpened, handleClick, showModal, setCartPopup}) => {
 								min={0}
 								value={values.tip}
 								errors={errors.tip}
-								onChange={handleChange}
+								onChange={e => addTip(e.target.value,'custom')}
 								/>
 						</div>
 						}

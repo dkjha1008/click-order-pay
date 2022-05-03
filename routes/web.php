@@ -40,8 +40,12 @@ Route::get('/insta', [FrontController::class, 'insta']);
 Route::get('/move',[FrontController::class,'move'])->name('move');
 
 //home page
+Route::middleware(['auth', 'verified'])->group(function () {
+	Route::get('/', [FrontController::class, 'home'])->name('home');
+});
 
-Route::get('/', [FrontController::class, 'home'])->name('home');
+
+
 Route::get('/about-us', [FrontController::class, 'about'])->name('about');
 Route::get('/contact-us', [FrontController::class, 'contact'])->name('contact');
 Route::post('/contact-us/request', [FrontController::class, 'contactUsForm'])->name('contact.request');

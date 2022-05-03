@@ -214,11 +214,12 @@ class FrontController extends Controller
 		$request = InertiaRequest::only('search', 'type','store');
 		if(!isset($request['store'])) return redirect('/');
 		
-		$storeId = Store::where('slug',$request['store'])					
-					->first()->users_id;
+		$store = Store::where('slug',$request['store'])->first();
+					
+		$storeId = $store->users_id;
 
 		$category = Category::where('status', '1')->where('is_delete', '0')
-			->where('store_id', $storeId);
+			->where('store_id', $store->id);
 
 		$allcat = $category->orderBy('reorder', 'asc')->get();
 		
@@ -231,7 +232,7 @@ class FrontController extends Controller
 			$products = Products::with('attributes')
 				->where('category', $cat->id)
 				->where('status', '1')
-				->where('store_id',$storeId )
+				//->where('store_id',$storeId )
 				->where('is_delete', '0')
 				->orderBy('reorder', 'asc')
 				->get();
