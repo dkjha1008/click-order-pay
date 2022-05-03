@@ -16,7 +16,7 @@ export default () => {
 	const [modalOtp, setModalOtp] = useState(false);
 	
 	const [values, setValues] = useState({
-		type: 'user',
+		role: 'user',
 		name: '',
 		phone_number: '',
 		email:'',
@@ -30,10 +30,22 @@ export default () => {
 		const value =
 		e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 
-		setValues(values => ({
-			...values,
-			[key]: value
-		}));
+		if(key==='role'){
+			setValues(values => ({
+				name:'',
+				phone_number:'',
+				email:'',
+				password:'',
+				password_confirmation:'',
+				[key]: value
+			}));
+		}
+		else {
+			setValues(values => ({
+				...values,
+				[key]: value
+			}));
+		}
 	}
 	
 	function handleSubmit(e) {
@@ -81,10 +93,10 @@ export default () => {
 							<div className="row mb-4">
 								<div className="col-md-6">
 									<button type="button"
-										name="type"
+										name="role"
 										value="user"
 										onClick={handleChange}
-										className={`btn btn-lg btn-block btn-${values.type=='user' ? 'dark' : 'light' }`}
+										className={`btn btn-lg btn-block btn-${values.role==='user' ? 'dark' : 'light' }`}
 										>
 										Customer
 									</button>
@@ -92,10 +104,10 @@ export default () => {
 
 								<div className="col-md-6">
 									<button type="button"
-										name="type"
+										name="role"
 										value="store"
 										onClick={handleChange}
-										className={`btn btn-lg btn-block btn-${values.type=='store' ? 'dark' : 'light' }`}
+										className={`btn btn-lg btn-block btn-${values.role==='store' ? 'dark' : 'light' }`}
 										>
 										Store
 									</button>
@@ -104,7 +116,7 @@ export default () => {
 
 							<div className="form-grouph input-design">
 								<TextInput
-									placeholder={values.type=='store' ? 'Company Name' : 'Name' }
+									placeholder={values.role==='store' ? 'Company Name' : 'Name' }
 									name="name"
 									type="text"
 									value={values.name}
@@ -114,7 +126,7 @@ export default () => {
 									/>
 							</div>
 
-							{values.type=='user' &&
+							{values.role==='user' &&
 							<div className="form-grouph input-design">
 								<TextInput
 									placeholder="Phone Number"

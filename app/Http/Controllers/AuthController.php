@@ -91,6 +91,7 @@ class AuthController extends Controller
 			InertiaRequest::validate([
 				$field => ['required'],
 				'password' => ['required', 'min:6'],
+				'role' => ['required'],
 			])
 		);
 		
@@ -107,7 +108,7 @@ class AuthController extends Controller
 
 		}
 		else {
-			return Redirect::back()->with('error', 'Incorrect Credentials');
+			return Redirect::back()->with('error', 'Invalid Credentials');
 		}
 	}
 	
@@ -127,7 +128,7 @@ class AuthController extends Controller
 	//...
 	public function signup(Request $request)
 	{
-		if($request->type=='store'){
+		if($request->role=='store'){
 			$checkStore = Store::where('title', $request->name)->count();
 			if($checkStore>0){
 				return response(['type'=>'error', 'message'=>'Company Name already exist']);
@@ -169,7 +170,7 @@ class AuthController extends Controller
 
 			//if(@$res){
 				$user = new User;
-				$user->role = $request->type;
+				$user->role = $request->role;
 				$user->name = $request->name;
 				$user->phone_number = $request->phone_number;
 				$user->email = $request->email;
@@ -177,7 +178,7 @@ class AuthController extends Controller
 				$user->otp = $otp;
 				$user->save();
 
-				if($request->type=='store')
+				if($request->role=='store')
 				{
 					Store::create([
 						'users_id'=> $user->id,
@@ -237,7 +238,7 @@ class AuthController extends Controller
 	//...
 	public function password(Request $request)
 	{
-		$user = User::where('email', $request->phone_number)->first();
+		$user = User::where('email', $request->email)->first();
 		
 		if(@$user){
 			//create user
@@ -297,7 +298,7 @@ class AuthController extends Controller
 	public function passwordInertia(Request $request)
 	{
 
-		$user = User::where('email', $request->phone_number)->first();
+		$user = User::where('email', $request->email)->first();
 		
 		if(@$user){
 			//...

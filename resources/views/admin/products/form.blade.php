@@ -49,16 +49,15 @@
     {!! Form::label('image','Image', ['class' => 'control-label']) !!}</br>
     {!! Form::file('image', null, ['class' => '' . ($errors->has('name') ? ' is-invalid' : '') ]) !!}
     {!! $errors->first('image', '</br><span class="help-block">:message</span>') !!}
-	@if(@$product && $product->image)
-		</br>
-		<img width="200" src="{{ asset('storage/products/'.$product->image) }}">
-	@endif
+    @if(@$product && $product->image)
+    </br>
+    <img width="200" src="{{ asset('storage/products/'.$product->image) }}">
+    @endif
 </div>
 @php
 $relatedProduct = [];
 if(@$product){
-    $ids = explode(',',$product->related_products);
-	
+$ids = explode(',',$product->related_products); 
 }
 @endphp
 
@@ -74,89 +73,92 @@ if(@$product){
     {!! Form::select('product_type', ['Simple'=>'Simple','Variable'=>'Variable'], $type ?? null, ['id'=>'product_type' ,'class' => 'form-control js-states' . ($errors->has('product_type') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Type --' ]) !!}
     {!! $errors->first('product_type', '<span class="help-block">:message</span>') !!}
 </div>
-<div class="attribute_fun" style="">
-@if(@$product)
- @if(@$product->product_type==='Variable')
-   @php 
-    $proAttrs = \App\Models\ProductAttribute::where('products_id',$product->id)->get();
-   @endphp
-
-  @foreach($proAttrs as $proAttr)
-  <div class="child">
-  <div class="attribute-scope ">
-
-<div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
-    {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
-    {!! Form::select('attribute[]', $attributes, $proAttr->attributes_id ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attributes --' ]) !!}
-    {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
-</div>
-<input type="hidden" name="attr_id[]" value="{{$proAttr->id}}">
-@php 
-$attrs = \App\Models\Attribute::where('id',$proAttr->attributes_id)->first();
-
-$arr = @explode(',',$attrs->value);
-$attrValues  = array_combine($arr,$arr);
-
-@endphp
 
 
-    <div class="form-group {!! ($errors->has('store') ? 'has-error' : '') !!}">
-        {!! Form::label('attribute_values','Select Attribute Value', ['class' => 'control-label']) !!}
-        {!! Form::select('attribute_values[]',$attrValues, $proAttr->value ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : ''),'placeholder' => '-- Select Attribute value --' ]) !!}
-        {!! $errors->first('attribute_values', '<span class="help-block">:message</span>') !!}
-    </div>
- </div>  
-    
-        <div class="form-group {!! ($errors->has('price') ? 'has-error' : '') !!}">
-            {!! Form::label('attribute_price','Attribute Price', ['class' => 'control-label']) !!}
-            {!! Form::number('attribute_price[]',$proAttr->price ?? null , ['class' => 'form-control' . ($errors->has('attribute_price') ? ' is-invalid' : '') ]) !!}
-            {!! $errors->first('attribute_price', '<span class="help-block">:message</span>') !!}
+
+
+
+    @if(@$product && $product->product_type==='Variable')    
+        @php 
+        $proAttrs = \App\Models\ProductAttribute::where('products_id',$product->id)->get();
+        @endphp
+        
+        @foreach($proAttrs as $proAttr)    
+        <div class="child">
+            <div class="attribute-scope ">
+                
+                <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
+                    {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
+                    {!! Form::select('attribute[]', $attributes, $proAttr->attributes_id ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attributes --' ]) !!}
+                    {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
+                </div>
+                <input type="hidden" name="attr_id[]" value="{{$proAttr->id}}">
+                @php 
+                $attrs = \App\Models\Attribute::where('id',$proAttr->attributes_id)->first();
+                
+                $arr = @explode(',',$attrs->value);
+                $attrValues  = array_combine($arr,$arr);
+                
+                @endphp
+                
+                
+                <div class="form-group {!! ($errors->has('store') ? 'has-error' : '') !!}">
+                    {!! Form::label('attribute_values','Select Attribute Value', ['class' => 'control-label']) !!}
+                    {!! Form::select('attribute_values[]',$attrValues, $proAttr->value ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : ''),'placeholder' => '-- Select Attribute value --' ]) !!}
+                    {!! $errors->first('attribute_values', '<span class="help-block">:message</span>') !!}
+                </div>
+            </div>  
+            
+            <div class="form-group {!! ($errors->has('price') ? 'has-error' : '') !!}">
+                {!! Form::label('attribute_price','Attribute Price', ['class' => 'control-label']) !!}
+                {!! Form::number('attribute_price[]',$proAttr->price ?? null , ['class' => 'form-control' . ($errors->has('attribute_price') ? ' is-invalid' : '') ]) !!}
+                {!! $errors->first('attribute_price', '<span class="help-block">:message</span>') !!}
+            </div>
+            <div class="col-md-1">
+                <i class="deleteId revertId fa fa-trash" title="Delete"></i>
+                <i class="revertId fa fa-times" title="Revert" style="display:none"></i>
+            </div>
         </div>
-        <div class="col-md-1">
-                    <i class="deleteId revertId fa fa-trash" title="Delete"></i>
-                    <i class="revertId fa fa-times" title="Revert" style="display:none"></i>
-    </div>
-</div>
-  @endforeach
-
-  <div class="rand"></div>
-    <button type="button" class="btn btn-success" id="add">Add More </button>
- @endif
-</div>
-@else
-<div class="attribute_fun" style="display:none">
-
-   <div class="attribute-scope">
-
-    <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
-        {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
-        {!! Form::select('attribute[]', $attributes, $type ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attributes --' ]) !!}
-        {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
-    </div>
+        @endforeach
+    @endif
 
 
-    @php 
-    $sizes = ['S'=>'S','M'=>'M','L'=>'L','XL'=>'XL','XXL'=>'XXL'];
-    $size = explode(',',@$product->sizes);
-    @endphp
-   
+hgvbngh
+<div class="attribute_fun" >
+    hgvbjnghv
+    <div class="attribute-scope">        
+        <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
+            {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
+            {!! Form::select('attribute[]', $attributes, $type ?? null, [ 'class' => 'form-control js-states attribute-val' . ($errors->has('attribute') ? ' is-invalid' : ''),'placeholder' => '-- Select Product Attributes --' ]) !!}
+            {!! $errors->first('attribute', '<span class="help-block">:message</span>') !!}
+        </div>
+        
+        
+        @php 
+        $sizes = ['S'=>'S','M'=>'M','L'=>'L','XL'=>'XL','XXL'=>'XXL'];
+        $size = explode(',',@$product->sizes);
+        @endphp
+        
         <div class="form-group {!! ($errors->has('store') ? 'has-error' : '') !!}">
             {!! Form::label('attribute_values','Select Attribute Value', ['class' => 'control-label']) !!}
             {!! Form::select('attribute_values[]', $sizes, $size ?? null, ['required'=>'required', 'class' => 'form-control js-states attr-val' . ($errors->has('attribute_values') ? ' is-invalid' : ''),'placeholder' => '-- Select Attribute value --' ]) !!}
             {!! $errors->first('attribute_values', '<span class="help-block">:message</span>') !!}
         </div>
-     </div>  
-            <div class="form-group {!! ($errors->has('price') ? 'has-error' : '') !!}">
-                {!! Form::label('attribute_price','Attribute Price', ['class' => 'control-label']) !!}
-                {!! Form::number('attribute_price[]', null, ['class' => 'form-control' . ($errors->has('attribute_price') ? ' is-invalid' : '') ]) !!}
-                {!! $errors->first('attribute_price', '<span class="help-block">:message</span>') !!}
-            </div>
-      
-   
+    </div>  
+    <div class="form-group {!! ($errors->has('price') ? 'has-error' : '') !!}">
+        {!! Form::label('attribute_price','Attribute Price', ['class' => 'control-label']) !!}
+        {!! Form::number('attribute_price[]', null, ['class' => 'form-control' . ($errors->has('attribute_price') ? ' is-invalid' : '') ]) !!}
+        {!! $errors->first('attribute_price', '<span class="help-block">:message</span>') !!}
+    </div>
+    
+    
     <div class="rand"></div>
     <button type="button" class="btn btn-success" id="add">Add More </button>
-</div>  
-@endif
+</div>
+
+
+
+
 
 <div class="form-group {!! ($errors->has('tag') ? 'has-error' : '') !!}">
     {!! Form::label('tag','Tag', ['class' => 'control-label']) !!}
@@ -168,7 +170,7 @@ $attrValues  = array_combine($arr,$arr);
     {!! Form::label('status','Status', ['class' => 'control-label']) !!}</br>
     {!! Form::radio('status', 0) !!} De-active
     {!! Form::radio('status', 1) !!} Active
-	</br>
+    </br>
     {!! $errors->first('status', '<span class="help-block">:message</span>') !!}
 </div>
 
@@ -189,46 +191,46 @@ $( document ).ready(function() {
     });
     
  
-		var editor =  CKEDITOR.replace( 'nutrition_info' );
-	});
+        var editor =  CKEDITOR.replace( 'nutrition_info' );
+    });
 
     $('#product_type').on('change',function(){
-        debugger;
+        //debugger;
         const productType = $(this).val();
         productType=='Variable' ? $('.attribute_fun').show() : $('.attribute_fun').hide()
     })
 
-	$(function () {
-		
-		$("input[name=price]").keydown(function (event) {
+    $(function () {
+        
+        $("input[name=price]").keydown(function (event) {
 
-			if (event.shiftKey == true) {
-				event.preventDefault();
-			}
+            if (event.shiftKey == true) {
+                event.preventDefault();
+            }
 
-			if ((event.keyCode >= 48 && event.keyCode <= 57) || 
-				(event.keyCode >= 96 && event.keyCode <= 105) || 
-				event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 ||
-				event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+            if ((event.keyCode >= 48 && event.keyCode <= 57) || 
+                (event.keyCode >= 96 && event.keyCode <= 105) || 
+                event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 ||
+                event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
 
-			} else {
-				event.preventDefault();
-			}
+            } else {
+                event.preventDefault();
+            }
 
-			if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
-				event.preventDefault(); 
-			//if a decimal has been added, disable the "."-button
+            if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                event.preventDefault(); 
+            //if a decimal has been added, disable the "."-button
 
-		});
+        });
 
 
 
-	
-		$('#add').on('click', function() {
-            debugger;
-			var our_html =  `<div class="child">
-					<div class="row">
-						<div class="col-md-11">
+    
+        $('#add').on('click', function() {
+           // debugger;
+            var our_html =  `<div class="child">
+                    <div class="row">
+                        <div class="col-md-11">
                     <div class="attribute-scope">
                         <div class="form-group {!! ($errors->has('attribute') ? 'has-error' : '') !!}">
                             {!! Form::label('attribute','Select Product Attributes', ['class' => 'control-label']) !!}
@@ -249,37 +251,37 @@ $( document ).ready(function() {
                             {!! $errors->first('attribute_price', '<span class="help-block">:message</span>') !!}
                         </div>
 
-						</div>
-						<div class="col-md-1">
-							<i class="delete fa fa-trash" title="Delete"></i>
-						</div>
-					</div>
+                        </div>
+                        <div class="col-md-1">
+                            <i class="delete fa fa-trash" title="Delete"></i>
+                        </div>
+                    </div>
 
-					
-				</div>`;
-			$('.rand').append(our_html);
-		});
-		
-		$(document).on('click', '.delete', function(event) {
-			event.preventDefault();
-			$(this).parents('.child').remove();
-		});
-		
-		$(document).on('click', '.deleteId', function(event) {
-			event.preventDefault();
-            debugger;
-			$(this).parents('.child').remove();
-			$(this).parents('.child').find('.delId').val('yes');
-		});
-		
-		$(document).on('click', '.revertId', function(event) {
-			event.preventDefault();
-			$(this).parents('.child').remove();
-			$(this).parents('.child').find('.delId').val('no');
-		});
+                    
+                </div>`;
+            $('.rand').append(our_html);
+        });
+        
+        $(document).on('click', '.delete', function(event) {
+            event.preventDefault();
+            $(this).parents('.child').remove();
+        });
+        
+        $(document).on('click', '.deleteId', function(event) {
+            event.preventDefault();
+            //debugger;
+            $(this).parents('.child').remove();
+            $(this).parents('.child').find('.delId').val('yes');
+        });
+        
+        $(document).on('click', '.revertId', function(event) {
+            event.preventDefault();
+            $(this).parents('.child').remove();
+            $(this).parents('.child').find('.delId').val('no');
+        });
 
         $(document).on('click','.attribute-val',function (){
-            debugger;
+           // debugger;
             let scope = $(this);
             let attrId = parseInt(scope.val());
             let url =  "route('admin.attributeById',"+attrId+")"
@@ -291,7 +293,7 @@ $( document ).ready(function() {
                
                 },
                 success: function(data) {
-                    debugger;
+                    //debugger;
                         console.log(data)
                     if(data.data.length>0){
                         let html = '';
@@ -305,10 +307,10 @@ $( document ).ready(function() {
                         scope.parents('.attribute-scope').find('.attr-val').html(html);
                       
                     }
-                    debugger;
+                    //debugger;
                 },
                 error:function(err){
-debugger;
+//debugger;
                 }
             
                

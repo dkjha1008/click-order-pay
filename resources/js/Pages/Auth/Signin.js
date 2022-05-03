@@ -16,7 +16,7 @@ export default () => {
 	const [sending, setSending] = useState(false);
 	const [otpForm, setOtpForm] = useState(false);
 	const [values, setValues] = useState({
-		type: 'user',
+		role: 'user',
 		phone_number: '',
 		password: '',
 		otp: '',
@@ -27,10 +27,19 @@ export default () => {
 		const value =
 		e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 
-		setValues(values => ({
-			...values,
-			[key]: value
-		}));
+		if(key==='role'){
+			setValues(values => ({
+				phone_number:'',
+				password:'',
+				[key]: value
+			}));
+		}
+		else {
+			setValues(values => ({
+				...values,
+				[key]: value
+			}));
+		}
 	}
 	
 	function handleSubmit(e) {
@@ -85,10 +94,10 @@ export default () => {
 							<div className="row mb-4">
 								<div className="col-md-6">
 									<button type="button"
-										name="type"
+										name="role"
 										value="user"
 										onClick={handleChange}
-										className={`btn btn-lg btn-block btn-${values.type=='user' ? 'dark' : 'light' }`}
+										className={`btn btn-lg btn-block btn-${values.role==='user' ? 'dark' : 'light' }`}
 										>
 										Customer
 									</button>
@@ -96,10 +105,10 @@ export default () => {
 
 								<div className="col-md-6">
 									<button type="button"
-										name="type"
+										name="role"
 										value="store"
 										onClick={handleChange}
-										className={`btn btn-lg btn-block btn-${values.type=='store' ? 'dark' : 'light' }`}
+										className={`btn btn-lg btn-block btn-${values.role==='store' ? 'dark' : 'light' }`}
 										>
 										Store
 									</button>
@@ -108,7 +117,7 @@ export default () => {
 
 							<div className="form-grouph input-design">
 								<TextInput
-									placeholder={values.type=='store' ? 'Email' : 'Email/ Phone Number' }
+									placeholder={values.role=='store' ? 'Email' : 'Email/ Phone Number' }
 									name="phone_number"
 									type="text"
 									value={values.phone_number}
