@@ -13,7 +13,7 @@ import Layout from '@/Shared/Layout';
 
 const Ucla = () => {
 	const { props } = usePage();
-	const { category, products, allcat, app, auth, attributes } = props;
+	const { stores, category, products, allcat, app, auth, attributes } = props;
 
 	const [productPopup, setProductPopup] = useState({});
 	const [userFavourite, setUserFavourite] = useState([]);
@@ -28,6 +28,7 @@ const Ucla = () => {
 	const [values, setValues] = useState({
 		type: '',
 		search: '',
+		store: '',
 	});
 
 	let current_hour = MomentTz().tz('America/Chicago').format("HHmm");
@@ -82,6 +83,13 @@ const Ucla = () => {
 			}));
 		}
 
+		if (route().params.store) {
+			setValues(values => ({
+				...values,
+				store: route().params.store
+			}));
+		}
+
 		async function fetchCartCount() {
 			try {
 				let data = { uuid };
@@ -108,8 +116,37 @@ const Ucla = () => {
 			? pickBy(values)
 			: {};
 
+		
+		///...
+		fetchSearchData(query);
+	}
+
+	function fetchSearchData(query){
 		const data = { ...route().params, ...query }
 		Inertia.replace(route(route().current(), data));
+	}
+
+	function handleChange(e) {
+		const key = e.target.name;
+		const value = e.target.value;
+
+		setValues(values => ({
+			...values,
+			[key]: value
+		}));
+
+
+		if(key==='store'){
+			const timer = setTimeout(() => {
+				values.store = value;
+				const query = Object.keys(pickBy(values)).length
+					? pickBy(values)
+					: {};
+
+				fetchSearchData(query);
+				clearTimeout(timer);
+			}, 1000); 
+		}
 	}
 
 
@@ -151,15 +188,7 @@ const Ucla = () => {
 		});
 	}
 
-	function handleChange(e) {
-		const key = e.target.name;
-		const value = e.target.value;
 
-		setValues(values => ({
-			...values,
-			[key]: value
-		}));
-	}
 
 	//favourite
 	function favourite(product) {
@@ -229,6 +258,16 @@ const Ucla = () => {
 							<div className="shopping-inner-container">
 
 								<form onSubmit={search} className="shop-filter-sec">
+									<div className="left-category-wrap">
+										<select name="store" value={values.store} onChange={handleChange}>
+											<option value="">Select a Store</option>
+											{stores.length > 0 && stores.map((store, key) => {
+												return (
+													<option value={store?.slug} key={key}>{store?.title}</option>
+												);
+											})}
+										</select>
+									</div>
 									<div className="left-category-wrap">
 										<select onChange={(event) => { scrollerRef(event.target.value) }}>
 											<option value="">Select a Category</option>

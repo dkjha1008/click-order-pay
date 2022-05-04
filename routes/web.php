@@ -22,6 +22,8 @@ use App\Http\Controllers\Store\StoreProductController;
 use App\Http\Controllers\Store\StoreOrdersController;
 use App\Http\Controllers\Store\StoreDashboardController;
 use App\Http\Controllers\Store\StoreCategoryController;
+use App\Http\Controllers\Store\StoreAttributeController;
+
 
 
 /*
@@ -40,9 +42,11 @@ Route::get('/insta', [FrontController::class, 'insta']);
 Route::get('/move',[FrontController::class,'move'])->name('move');
 
 //home page
-Route::middleware(['auth', 'verified'])->group(function () {
-	Route::get('/', [FrontController::class, 'home'])->name('home');
-});
+Route::get('/', [FrontController::class, 'home'])->name('home');
+
+//ucla page
+Route::get('/shop', [FrontController::class, 'ucla'])->name('ucla');
+
 
 
 
@@ -59,8 +63,7 @@ Route::post('/favourite/action', [FrontController::class, 'favouriteAction'])->n
 Route::get('/store-hours', [FrontController::class, 'storeHours'])->name('storeHours');
 Route::get('/current-locations', [FrontController::class, 'currentLocation'])->name('currentLocation');
 
-//ucla page
-Route::get('/shop', [FrontController::class, 'ucla'])->name('ucla');
+
 
 
 // Auth
@@ -304,6 +307,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		});
 
 
+		Route::group(['middleware' => ['role:store']], function(){
+			Route::resource('attributes', StoreAttributeController::class, ['as' => 'store']);
+		});
 
 	});
 	

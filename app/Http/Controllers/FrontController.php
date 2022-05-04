@@ -52,7 +52,7 @@ class FrontController extends Controller
 			if($role=='store') return  Inertia::location('/store');
 
 		}else{
-			Redirect::route('/');
+			Redirect::route('signin');
 		}
 	}
 	
@@ -64,6 +64,14 @@ class FrontController extends Controller
 	
     //...
 	public function home(){
+
+		if(auth()->check()){
+			return redirect()->route('ucla');
+		}
+		return redirect()->route('signup');
+
+
+		//..............
 		$stores = Store::whereHas('user',function($query) {
 			$query->where('role','store')->where('status','1');
 		})->select('title','slug')->get();
@@ -210,53 +218,67 @@ class FrontController extends Controller
 	
 	//...
 	public function ucla(){
-	 
-		$request = InertiaRequest::only('search', 'type','store');
-		if(!isset($request['store'])) return redirect('/');
-		
-		$store = Store::where('slug',$request['store'])->first();
-					
-		$storeId = $store->users_id;
+	 	
+	 	$request = InertiaRequest::only('search', 'type', 'store');
+	 	//...
+	 	$category = [];
+	 	$allcat = [];
+	 	$products = [];
+	 	$attributes = [];
 
-		$category = Category::where('status', '1')->where('is_delete', '0')
-			->where('store_id', $store->id);
-
-		$allcat = $category->orderBy('reorder', 'asc')->get();
+		if(@$request['store']) {
 		
-		if(@$request['type']){
-			$category = $category->where('slug', $request['type']);
-		}
-		$category = $category->orderBy('id', 'asc')->get();
-		
-		foreach($category as $cat){
-			$products = Products::with('attributes')
-				->where('category', $cat->id)
-				->where('status', '1')
-				//->where('store_id',$storeId )
-				->where('is_delete', '0')
-				->orderBy('reorder', 'asc')
-				->get();
-			// dd($products[2]->attributes);
+			//if(!isset($request['store'])) return redirect('/');
 			
-			// $modified = $products->map(function($item, $key) {
-			// 	return strtoupper($item);
-			//  });
+			$store = Store::where('slug',$request['store'])->first();
+			$storeId = $store->users_id;
 
-			$cat->products = $products;
+			$category = Category::where('status', '1')->where('is_delete', '0')
+				->where('store_id', $store->id);
 
+			$allcat = $category->orderBy('reorder', 'asc')->get();
+			
+			if(@$request['type']){
+				$category = $category->where('slug', $request['type']);
+			}
+			$category = $category->orderBy('id', 'asc')->get();
+			
+			foreach($category as $cat){
+				$products = Products::with('attributes')
+					->where('category', $cat->id)
+					->where('status', '1')
+					//->where('store_id',$storeId )
+					->where('is_delete', '0')
+					->orderBy('reorder', 'asc')
+					->get();
+				// dd($products[2]->attributes);
+				
+				// $modified = $products->map(function($item, $key) {
+				// 	return strtoupper($item);
+				//  });
+
+				$cat->products = $products;
+
+			}
+			
+			$products = '';
+			if(@$request['search']){
+				$products = Products::with('attributes')->where('status', '1')
+					->where('is_delete', '0')
+					->where('store_id',$storeId )
+					->where('title', 'like', '%'.$request['search'].'%')
+					->orderBy('reorder', 'asc')->get();
+			}
+
+			$attributes = Attribute::all();
 		}
-		
-		$products = '';
-		if(@$request['search']){
-			$products = Products::with('attributes')->where('status', '1')
-				->where('is_delete', '0')
-				->where('store_id',$storeId )
-				->where('title', 'like', '%'.$request['search'].'%')
-				->orderBy('reorder', 'asc')->get();
-		}
-	   $attributes = Attribute::all();
 
-		return Inertia::render('Ucla', ['category'=>$category, 'allcat'=>$allcat, 'products'=>$products, 'attributes'=>$attributes]);
+
+		$stores = Store::whereHas('user',function($query) {
+			$query->where('role','store')->where('status','1');
+		})->select('title','slug')->get();
+
+		return Inertia::render('Ucla', ['category'=>$category, 'allcat'=>$allcat, 'products'=>$products, 'attributes'=>$attributes, 'stores'=>$stores]);
 	}
 
 
