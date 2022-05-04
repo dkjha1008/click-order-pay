@@ -55,7 +55,7 @@ const Home = () => {
 												<option value="">--Select Store--</option>
 												{stores?.length>0 && stores.map((store, key) => {
 													
-                                                return (<option value={store?.slug}>{store?.title}</option>)
+                                                return (<option value={store?.slug} key={key}>{store?.title}</option>)
 												})}
 											</select>
 											

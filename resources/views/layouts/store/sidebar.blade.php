@@ -41,6 +41,13 @@
 				</li>
 				
 				<li class="nav-item">
+					<a href="{{ route('store.attributes.index') }}" class="nav-link {{ @$title['active']=='attribute' ? 'active' : '' }}">
+						<i class="nav-icon fas fa-list"></i>
+						<p>Attributes</p>
+					</a>
+				</li>
+
+				<li class="nav-item">
 					<a href="{{ route('store.category') }}" class="nav-link {{ @$title['active']=='category' ? 'active' : '' }}">
 						<i class="nav-icon fas fa-list"></i>
 						<p>Category</p>
